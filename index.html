@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>William Chia • Work Tools</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f5f7fa;
+      color: #333;
+    }
+    header {
+      background: #1a73e8;
+      color: #fff;
+      padding: 40px 20px;
+      text-align: center;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2.2rem;
+      font-weight: 600;
+    }
+    header p {
+      margin-top: 8px;
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    .link-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      text-decoration: none;
+      color: inherit;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+    }
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #1a73e8;
+    }
+    footer {
+      text-align: center;
+      padding: 30px 0;
+      font-size: 0.9rem;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>William Chia — Work Tools</h1>
+    <p>Central hub linking all work-related calculators, demo tools, and HTML projects</p>
+  </header>
+
+  <div class="container">
+    <div class="link-grid">
+      <a href="factoring-calculator.html" class="card">
+        <div class="card-title">Factoring Calculator</div>
+        <p>Compute advance rates, fees, and effective costs for factoring scenarios.</p>
+      </a>
+    </div>
+        <p>Interactive tool for LSA valuation, CPF projections, and loan computations.</p>
+      </a>
+
+      <a href="your-file-2.html" class="card">
+        <div class="card-title">Factoring Risk Checklist</div>
+        <p>Checklist template to identify risks in purchase orders and trading profiles.</p>
+      </a>
+
+      <a href="your-file-3.html" class="card">
+        <div class="card-title">SCF / ABL Prototype</div>
+        <p>Exploration prototype for innovative supply‑chain and asset‑based lending models.</p>
+      </a>
+
+      <!-- Add more links by duplicating the card block -->
+    </div>
+  </div>
+
+  <footer>
+    © <span id="year"></span> William Chia. All Rights Reserved.
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
