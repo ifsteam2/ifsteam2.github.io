@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ARP Total Financing Cost Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 2rem;
+      background: #f5f7fb;
+      color: #1f2933;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin-bottom: 0.25rem;
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .subtitle {
+      color: #6b7280;
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 1.5rem 1.75rem;
+      box-shadow: 0 12px 25px rgba(15, 23, 42, 0.08);
+      margin-bottom: 1.5rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.85rem 1rem;
+    }
+
+    @media (max-width: 700px) {
+      body { padding: 1rem; }
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    label {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #374151;
+    }
+
+    input[type="text"],
+    input[type="number"] {
+      padding: 0.55rem 0.65rem;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      font-size: 0.9rem;
+      outline: none;
+      background: #f9fafb;
+    }
+
+    input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.2);
+      background: #ffffff;
+    }
+
+    .hint {
+      font-size: 0.75rem;
+      color: #9ca3af;
+    }
+
+    .btn-row {
+      margin-top: 1rem;
+      display: flex;
+      justify-content: flex-start;
+      gap: 0.75rem;
+    }
+
+    .btn-primary {
+      padding: 0.6rem 1.4rem;
+      border-radius: 999px;
+      border: none;
+      background: #2563eb;
+      color: #ffffff;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.25);
+    }
+
+    .btn-primary:hover {
+      background: #1d4ed8;
+    }
+
+    .btn-print {
+      padding: 0.6rem 1.4rem;
+      border-radius: 999px;
+      border: none;
+      background: #059669;
+      color: #ffffff;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(5, 150, 105, 0.25);
+    }
+
+    .btn-print:hover {
+      background: #047857;
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem 1rem;
+    }
+
+    @media (max-width: 700px) {
+      .results-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .result-item {
+      padding: 0.6rem 0.75rem;
+      border-radius: 8px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+    }
+
+    .result-label {
+      font-size: 0.8rem;
+      color: #6b7280;
+      margin-bottom: 0.15rem;
+    }
+
+    .result-value {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .highlight {
+      border-color: #bfdbfe;
+      background: #eff6ff;
+    }
+
+    .footer-note {
+      font-size: 0.75rem;
+      color: #9ca3af;
+      margin-top: 0.75rem;
+      line-height: 1.4;
+    }
+
+    .breakdown-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #111827;
+    }
+
+    #breakdownText {
+      font-size: 0.8rem;
+      color: #374151;
+      line-height: 1.5;
+    }
+
+    .breakdown-intro {
+      margin: 0 0 0.5rem 0;
+      font-size: 0.78rem;
+      color: #6b7280;
+    }
+
+    .breakdown-subtitle {
+      margin: 0.75rem 0 0.25rem 0;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .breakdown-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.35rem;
+      font-size: 0.78rem;
+    }
+
+    .breakdown-table th,
+    .breakdown-table td {
+      border: 1px solid #e5e7eb;
+      padding: 0.35rem 0.45rem;
+    }
+
+    .breakdown-table th {
+      background: #eff6ff;
+      color: #1f2937;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .breakdown-table th:first-child,
+    .breakdown-table td:first-child {
+      text-align: center;
+      width: 50px;
+    }
+
+    .breakdown-table td {
+      text-align: right;
+      color: #374151;
+    }
+
+    .breakdown-table tbody tr:nth-child(even) {
+      background: #f9fafb;
+    }
+
+    .breakdown-table.totals {
+      margin-top: 0.5rem;
+      font-size: 0.8rem;
+    }
+
+    .breakdown-table.totals td {
+      background: #f9fafb;
+      border-color: #e5e7eb;
+      padding: 0.3rem 0.5rem;
+    }
+
+    .breakdown-table.totals tr td:first-child {
+      text-align: left;
+      font-weight: 500;
+      width: 70%;
+    }
+
+    .breakdown-table.totals tr td:last-child {
+      text-align: right;
+      font-weight: 500;
+      width: 30%;
+    }
+
+    .breakdown-table.totals tr:last-child td {
+      border-top: 2px solid #d1d5db;
+      font-weight: 600;
+      background: #f3f4f6;
+    }
+
+    @media print {
+      body {
+        background: #ffffff;
+        padding: 0.5rem;
+      }
+      .card {
+        box-shadow: none;
+      }
+      .btn-row {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>ARP Total Financing Cost Calculator</h1>
+    <div class="subtitle">
+      Assumes full drawdown at maximum advance ratio for the expected payment trend.
+      Each month is assumed to have exactly <strong>30 days</strong>.<br />
+      For each 30-day period:
+      <ul style="margin:0.35rem 0 0 1.25rem; padding:0; font-size:0.85rem; color:#6b7280;">
+        <li>Interest = Start FIU × Interest Rate × 30 / 365</li>
+        <li>ESG Premium = FIU on last day of month × Interest Rate × 30 / 365 × ESG%</li>
+        <li>End FIU = Last-day FIU + ESG Premium (both interest &amp; ESG are capitalised)</li>
+      </ul>
+    </div>
+
+    <!-- INPUTS CARD -->
+    <div class="card">
+      <form id="calc-form" onsubmit="return false;">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="invoiceAmount">Invoice Amount (SGD)</label>
+            <input
+              type="text"
+              id="invoiceAmount"
+              value="100,000"
+              inputmode="decimal"
+            />
+            <div class="hint">
+              Enter in dollars. Commas will be added automatically (e.g. 10,000 or 100,000).
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="advanceRatio">Advance Ratio %</label>
+            <input type="number" id="advanceRatio" value="80" step="0.01" />
+            <div class="hint">% of invoice advanced as FIU.</div>
+          </div>
+
+          <div class="form-group">
+            <label for="interestRate">Interest Rate % p.a.</label>
+            <input type="number" id="interestRate" value="8" step="0.01" />
+          </div>
+
+          <div class="form-group">
+            <label for="factoringCharge">Factoring Charge % (on Invoice Value)</label>
+            <input type="number" id="factoringCharge" value="1.5" step="0.01" />
+            <div class="hint">Flat fee charged on full invoice amount.</div>
+          </div>
+
+          <div class="form-group">
+            <label for="esgPremium">ESG Premium % (on interest)</label>
+            <input type="number" id="esgPremium" value="5" step="0.01" />
+          </div>
+
+          <div class="form-group">
+            <label for="expectedDays">Expected Payment Trend (days)</label>
+            <input type="number" id="expectedDays" value="60" step="1" />
+            <div class="hint">
+              Tenor is split into 30-day blocks plus a final partial block (all using 30-day formulas).
+            </div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn-primary" onclick="calculate()">Calculate</button>
+          <button type="button" class="btn-print" onclick="window.print()">Print Summary (PDF)</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- RESULTS CARD -->
+    <div class="card">
+      <div class="results-grid">
+        <div class="result-item">
+          <div class="result-label">Initial Advance Amount (FIU)</div>
+          <div class="result-value" id="advanceAmountDisplay">-</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">Total Interest Incurred</div>
+          <div class="result-value" id="interestCostDisplay">-</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">Total Factoring Fees Incurred</div>
+          <div class="result-value" id="factoringCostDisplay">-</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">Total ESG Premium Incurred</div>
+          <div class="result-value" id="esgCostDisplay">-</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">Estimated FIU at End of Tenor</div>
+          <div class="result-value" id="finalFiuDisplay">-</div>
+        </div>
+
+        <div class="result-item highlight">
+          <div class="result-label">Total Financing Cost (Amount)</div>
+          <div class="result-value" id="totalCostDisplay">-</div>
+        </div>
+
+        <div class="result-item highlight">
+          <div class="result-label">Total Financing Cost (% of Invoice)</div>
+          <div class="result-value" id="totalPctDisplay">-</div>
+        </div>
+      </div>
+
+      <div class="footer-note">
+        Each "month" is assumed to be 30 days. Interest and ESG are capitalised into FIU at the end of each period.
+      </div>
+    </div>
+
+    <!-- BREAKDOWN CARD -->
+    <div class="card">
+      <div class="breakdown-title">Calculation Breakdown</div>
+      <div id="breakdownText">
+        <p class="breakdown-intro">
+          Run a calculation to see period-by-period workings in the tables below.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function formatCurrency(amount) {
+      if (!isFinite(amount)) return "-";
+      return (
+        "SGD " +
+        amount.toLocaleString("en-SG", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })
+      );
+    }
+
+    function formatPercent(value) {
+      if (!isFinite(value)) return "-";
+      return (
+        value.toLocaleString("en-SG", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }) + " %"
+      );
+    }
+
+    function formatRate(value) {
+      if (!isFinite(value)) return "-";
+      return (
+        value.toLocaleString("en-SG", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }) + " %"
+      );
+    }
+
+    function formatWithCommas(value) {
+      if (value === null || value === undefined) return "";
+      const raw = value.toString().replace(/,/g, "");
+      if (raw === "" || isNaN(raw)) return "";
+      return Number(raw).toLocaleString("en-SG", {
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 0,
+      });
+    }
+
+    function parseInvoiceAmount() {
+      const raw = document
+        .getElementById("invoiceAmount")
+        .value.replace(/,/g, "");
+      const val = parseFloat(raw);
+      return isNaN(val) ? 0 : val;
+    }
+
+    function calculate() {
+      const invoiceAmount = parseInvoiceAmount();
+      const advanceRatioInput = parseFloat(
+        document.getElementById("advanceRatio").value
+      );
+      const interestRateInput = parseFloat(
+        document.getElementById("interestRate").value
+      );
+      const factoringChargeInput = parseFloat(
+        document.getElementById("factoringCharge").value
+      );
+      const esgPremiumInput = parseFloat(
+        document.getElementById("esgPremium").value
+      );
+      const expectedDays = parseFloat(
+        document.getElementById("expectedDays").value
+      );
+
+      if (!isFinite(invoiceAmount) || invoiceAmount <= 0) {
+        alert("Please enter a valid invoice amount.");
+        return;
+      }
+
+      const advanceRatio = advanceRatioInput / 100;
+      const interestRate = interestRateInput / 100;
+      const factoringCharge = factoringChargeInput / 100;
+      const esgPremium = esgPremiumInput / 100;
+
+      const initialFIU =
+        isFinite(advanceRatio) && advanceRatio > 0
+          ? invoiceAmount * advanceRatio
+          : 0;
+
+      const DAYS_PER_PERIOD = 30;
+      let remainingDays =
+        isFinite(expectedDays) && expectedDays > 0 ? expectedDays : 0;
+
+      let currentFIU = initialFIU;
+      let totalInterest = 0;
+      let totalESG = 0;
+
+      let period = 1;
+
+      let breakdownHtml = "";
+      breakdownHtml +=
+        '<p class="breakdown-intro">Assumptions: 30-day months. For each period:<br>' +
+        "Interest = Start FIU × Interest Rate × 30/365<br>" +
+        "ESG = FIU on last day of month × Interest Rate × 30/365 × ESG%.</p>";
+
+      breakdownHtml +=
+        '<div class="breakdown-subtitle">Period-by-Period Cash Cost &amp; FIU Movement</div>';
+      breakdownHtml +=
+        '<table class="breakdown-table"><thead><tr>' +
+        "<th>Period</th>" +
+        "<th>Start FIU</th>" +
+        "<th>Interest (30 days)</th>" +
+        "<th>FIU at Day 30<br>(before ESG)</th>" +
+        "<th>ESG Premium</th>" +
+        "<th>End FIU<br>(after ESG)</th>" +
+        "</tr></thead><tbody>";
+
+      while (remainingDays > 0) {
+        const daysThisPeriod =
+          remainingDays >= DAYS_PER_PERIOD ? DAYS_PER_PERIOD : remainingDays;
+
+        const startFIU = currentFIU;
+
+        const interestThisPeriod =
+          startFIU * interestRate * (DAYS_PER_PERIOD / 365);
+
+        const fiuLastDay = startFIU + interestThisPeriod;
+
+        const esgThisPeriod =
+          fiuLastDay *
+          interestRate *
+          (DAYS_PER_PERIOD / 365) *
+          esgPremium;
+
+        totalInterest += interestThisPeriod;
+        totalESG += esgThisPeriod;
+
+        const endFIU = fiuLastDay + esgThisPeriod;
+
+        breakdownHtml += "<tr>";
+        breakdownHtml += `<td>${period}</td>`;
+        breakdownHtml += `<td>${formatCurrency(startFIU)}</td>`;
+        breakdownHtml += `<td>${formatCurrency(interestThisPeriod)}</td>`;
+        breakdownHtml += `<td>${formatCurrency(fiuLastDay)}</td>`;
+        breakdownHtml += `<td>${formatCurrency(esgThisPeriod)}</td>`;
+        breakdownHtml += `<td>${formatCurrency(endFIU)}</td>`;
+        breakdownHtml += "</tr>";
+
+        currentFIU = endFIU;
+        remainingDays -= daysThisPeriod;
+        period += 1;
+      }
+
+      breakdownHtml += "</tbody></table>";
+
+      const factoringCost =
+        isFinite(factoringCharge) && factoringCharge > 0
+          ? invoiceAmount * factoringCharge
+          : 0;
+
+      const totalCost = totalInterest + totalESG + factoringCost;
+      const totalPct =
+        invoiceAmount > 0 ? (totalCost / invoiceAmount) * 100 : NaN;
+
+      breakdownHtml +=
+        '<div class="breakdown-subtitle">Overall Totals</div>';
+      breakdownHtml +=
+        '<table class="breakdown-table totals"><tbody>';
+      breakdownHtml +=
+        "<tr><td>Total Interest</td><td>" +
+        formatCurrency(totalInterest) +
+        "</td></tr>";
+      breakdownHtml +=
+        "<tr><td>Total ESG Premium</td><td>" +
+        formatCurrency(totalESG) +
+        "</td></tr>";
+      breakdownHtml +=
+        "<tr><td>Factoring Fee (on Invoice)</td><td>" +
+        formatCurrency(factoringCost) +
+        "</td></tr>";
+      breakdownHtml +=
+        "<tr><td>Total Financing Cost</td><td>" +
+        formatCurrency(totalCost) +
+        "</td></tr>";
+      breakdownHtml +=
+        "<tr><td>Total Financing Cost as % of Invoice</td><td>" +
+        formatPercent(totalPct) +
+        "</td></tr>";
+      breakdownHtml += "</tbody></table>";
+
+      document.getElementById("advanceAmountDisplay").textContent =
+        formatCurrency(initialFIU);
+      document.getElementById("interestCostDisplay").textContent =
+        formatCurrency(totalInterest);
+      document.getElementById("factoringCostDisplay").textContent =
+        formatCurrency(factoringCost);
+      document.getElementById("esgCostDisplay").textContent =
+        formatCurrency(totalESG);
+      document.getElementById("finalFiuDisplay").textContent =
+        formatCurrency(currentFIU);
+      document.getElementById("totalCostDisplay").textContent =
+        formatCurrency(totalCost);
+      document.getElementById("totalPctDisplay").textContent =
+        formatPercent(totalPct);
+
+      document.getElementById("breakdownText").innerHTML = breakdownHtml;
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const invoiceInput = document.getElementById("invoiceAmount");
+      invoiceInput.value = formatWithCommas(invoiceInput.value);
+
+      invoiceInput.addEventListener("blur", () => {
+        invoiceInput.value = formatWithCommas(invoiceInput.value);
+      });
+
+      invoiceInput.addEventListener("focus", () => {
+        invoiceInput.value = invoiceInput.value.replace(/,/g, "");
+      });
+    });
+  </script>
+</body>
+</html>
