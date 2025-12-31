@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Active Customer Checker</title>
+
+<style>
+:root{
+  --bg:#f5f7fa;
+  --card:#ffffff;
+  --text:#0f172a;
+  --muted:#64748b;
+  --border:#e5e7eb;
+  --shadow:0 8px 24px rgba(15,23,42,.08);
+  --radius:14px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Segoe UI,Roboto,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+.topbar{
+  position:sticky;
+  top:0;
+  background:#fff;
+  border-bottom:1px solid var(--border);
+  padding:14px 18px;
+}
+.topbar-inner{
+  max-width:1100px;
+  margin:auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.wrap{
+  max-width:1100px;
+  margin:18px auto 40px;
+  padding:0 18px;
+}
+.card{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+}
+.card-header{
+  padding:18px;
+  border-bottom:1px solid var(--border);
+}
+.card-title{
+  font-size:18px;
+  font-weight:800;
+}
+.card-sub{
+  font-size:13px;
+  color:var(--muted);
+  margin-top:6px;
+}
+.card-body{padding:18px}
+.row{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  align-items:end;
+}
+.field{flex:1 1 420px}
+label{
+  font-size:13px;
+  font-weight:600;
+  color:var(--muted);
+}
+input{
+  width:100%;
+  padding:12px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  font-size:14px;
+}
+.btns{display:flex;gap:10px}
+button{
+  padding:12px 16px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  font-weight:700;
+  cursor:pointer;
+}
+.primary{background:#0f172a;color:#fff}
+.meta{font-size:12px;color:var(--muted);margin-top:8px}
+.status{
+  display:none;
+  margin-top:16px;
+  padding:14px;
+  border-radius:12px;
+  border:1px solid var(--border);
+}
+.status.ok{
+  display:block;
+  background:rgba(34,197,94,.1);
+  border-color:rgba(34,197,94,.4);
+}
+.status.bad{
+  display:block;
+  background:rgba(239,68,68,.1);
+  border-color:rgba(239,68,68,.4);
+}
+.status.warn{
+  display:block;
+  background:rgba(234,179,8,.15);
+  border-color:rgba(234,179,8,.4);
+}
+.status-title{font-weight:900;margin-bottom:6px}
+.result-card{
+  display:none;
+  margin-top:14px;
+  padding:14px;
+  border-radius:12px;
+  border:1px solid var(--border);
+}
+.result-card.show{display:block}
+.grid{
+  display:grid;
+  grid-template-columns:1fr 2fr;
+  gap:10px 14px;
+  margin-top:10px;
+}
+.k{font-size:13px;font-weight:700;color:var(--muted)}
+.v{font-size:14px;font-weight:700}
+.footer-note{font-size:12px;color:var(--muted);margin-top:14px}
+@media(max-width:520px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <strong>Active Customer Checker</strong>
+    <span style="font-size:13px;color:#64748b">
+      Internal working tool • For discussion & illustration only
+    </span>
+  </div>
+</header>
+
+<main class="wrap">
+<section class="card">
+  <div class="card-header">
+    <div class="card-title">Search Approved & Active Customers</div>
+    <div class="card-sub">
+      Case-insensitive fuzzy search with ranked partial matching
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="row">
+      <div class="field">
+        <label>Customer Name</label>
+        <input id="q" placeholder="e.g. abc trading pte ltd">
+        <div class="meta">
+          Data source: <span id="dataSource">Not loaded</span><br>
+          Last Updated: <span id="lastUpdated">—</span>
+        </div>
+      </div>
+      <div class="btns">
+        <button class="primary" onclick="searchCustomer()">Search</button>
+        <button onclick="resetUI()">Reset</button>
+      </div>
+    </div>
+
+    <div class="status" id="status">
+      <div class="status-title" id="statusTitle"></div>
+      <div id="statusText"></div>
+    </div>
+
+    <div class="result-card" id="result">
+      <strong>Confirmed Active Customer</strong>
+      <div class="grid">
+        <div class="k">Company Name</div><div class="v" id="rName"></div>
+        <div class="k">Top Parent Company</div><div class="v" id="rParent"></div>
+        <div class="k">Company Type</div><div class="v" id="rType"></div>
+        <div class="k">Company Category</div><div class="v" id="rCategory"></div>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      Required CSV headers:
+      Company Name, Top Parent Company, Company Type, Company Category
+    </div>
+  </div>
+</section>
+</main>
+
+<script>
+const CSV_URL = "./all-customers-active.csv";
+let rows=[], headers=[];
+
+const el=id=>document.getElementById(id);
+const norm=s=>(s||"").toLowerCase().replace(/\s+/g," ").trim();
+
+function resetUI(){
+  el("status").className="status";
+  el("result").classList.remove("show");
+}
+
+function setStatus(type,title,text){
+  const s=el("status");
+  s.className="status "+type;
+  el("statusTitle").innerText=title;
+  el("statusText").innerText=text;
+}
+
+function parseCSV(text){
+  const lines=text.split(/\r?\n/).filter(l=>l.trim());
+  headers=lines[0].split(",").map(h=>h.trim());
+  rows=lines.slice(1).map(line=>{
+    const cols=line.split(",");
+    const obj={};
+    headers.forEach((h,i)=>obj[h]=cols[i]?.trim()||"");
+    return obj;
+  });
+}
+
+function header(name){
+  return headers.find(h=>norm(h)===norm(name));
+}
+
+function score(query,name){
+  query=norm(query); name=norm(name);
+  if(name===query) return 100;
+  if(name.startsWith(query)) return 80;
+  if(name.includes(query)) return 60;
+  const q=query.split(" "), n=name.split(" ");
+  const hits=q.filter(w=>n.includes(w)).length;
+  return hits ? 40+hits : 0;
+}
+
+async function loadCSV(){
+  if(rows.length) return;
+  const head=await fetch(CSV_URL,{method:"HEAD"});
+  const lm=head.headers.get("Last-Modified");
+  if(lm) el("lastUpdated").innerText=new Date(lm).toLocaleDateString();
+  const res=await fetch(CSV_URL,{cache:"no-store"});
+  parseCSV(await res.text());
+  el("dataSource").innerText=`Loaded (${rows.length})`;
+}
+
+async function searchCustomer(){
+  resetUI();
+  const q=el("q").value.trim();
+  if(!q){
+    setStatus("warn","No input","Please enter a customer name.");
+    return;
+  }
+  await loadCSV();
+
+  const key=header("Company Name");
+  let best=null, bestScore=0;
+
+  rows.forEach(r=>{
+    const s=score(q,r[key]);
+    if(s>bestScore){bestScore=s;best=r;}
+  });
+
+  if(bestScore>=60){
+    setStatus("ok","This is a approved and active customer.","Record found with high confidence.");
+    el("rName").innerText=best[header("Company Name")];
+    el("rParent").innerText=best[header("Top Parent Company")]||"-";
+    el("rType").innerText=best[header("Company Type")]||"-";
+    el("rCategory").innerText=best[header("Company Category")]||"-";
+    el("result").classList.add("show");
+  }else{
+    setStatus("bad","Not found","No sufficiently confident match in active customer list.");
+  }
+}
+</script>
+
+</body>
+</html>
