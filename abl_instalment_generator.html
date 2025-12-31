@@ -220,6 +220,43 @@ th{
   body{ background:#fff !important; }
   .card,.section{ box-shadow:none !important; }
 }
+/* ===== Responsive checkbox options (mobile/tablet friendly) ===== */
+.check-row{
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.check-item{
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+  padding: 10px 12px;
+  border: 1px solid var(--ui-border, #e2e8f0);
+  background: var(--ui-surface-2, #f9fafb);
+  border-radius: 12px;
+}
+.check-item input[type="checkbox"]{
+  width: 18px !important;
+  height: 18px !important;
+  margin-top: 2px;
+  flex: 0 0 auto;
+}
+.check-item .check-text{
+  line-height: 1.25;
+}
+.check-item .check-title{
+  font-weight: 800;
+  font-size: 13px;
+}
+.check-item .check-desc{
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--ui-muted, #475569);
+}
+@media (max-width: 980px){
+  .check-row{ grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
@@ -330,15 +367,21 @@ th{
 
       <div style="grid-column: span 4;">
         <label style="display:block;">Options</label>
-        <div style="margin-top:8px; display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-          <label style="display:flex;gap:8px;align-items:center;font-weight:600;font-size:13px;">
+                <div class="check-row">
+          <label class="check-item" for="scFullInterest">
             <input id="scFullInterest" type="checkbox">
-            Full interest servicing only (no instalment input needed)
+            <span class="check-text">
+              <div class="check-title">Full interest servicing only</div>
+              <div class="check-desc">No instalment input needed; schedule will be interest-only for the full tenor.</div>
+            </span>
           </label>
 
-          <label style="display:flex;gap:8px;align-items:center;font-weight:600;font-size:13px;">
+          <label class="check-item" for="scCriteria">
             <input id="scCriteria" type="checkbox" checked>
-            Apply credit criteria: upfront cap + year-end 3% p.a. principal paydown check (for tenor &gt; 3 years)
+            <span class="check-text">
+              <div class="check-title">Apply credit criteria</div>
+              <div class="check-desc">Upfront cap + year-end 3% p.a. principal paydown check (for tenor &gt; 3 years).</div>
+            </span>
           </label>
         </div>
       </div>
