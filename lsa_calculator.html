@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Loan Servicing Ability (LSA) Ratio Calculator</title>
+  <style>
+    :root{
+      --bg:#f5f7fa;
+      --card:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --primary:#1a73e8;
+      --ok:#0f9d58;
+      --danger:#d93025;
+      --warn:#f9ab00;
+      --shadow:0 8px 24px rgba(0,0,0,.08);
+      --radius:14px;
+    }
+    *{box-sizing:border-box}
+    html, body{height:100%}
+    body{
+      margin:0;
+      font-family:"Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+
+    /* White top bar (standardised) */
+    header{
+      background:#fff;
+      border-bottom:1px solid var(--line);
+      padding:14px 18px;
+    }
+    header .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .hdr-left{
+      font-size:.82rem;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      color:#64748b;
+      margin-top:2px;
+    }
+    .hdr-right{
+      text-align:right;
+      line-height:1.25;
+    }
+    .hdr-right .t1{
+      font-size:.82rem;
+      font-weight:800;
+      color:#0f172a;
+    }
+    .hdr-right .t2{
+      font-size:.78rem;
+      color:#64748b;
+      font-weight:600;
+    }
+
+    .container{
+      max-width:1100px;
+      margin:22px auto 40px;
+      padding:0 16px;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .tabs{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      padding:14px 14px 0;
+    }
+    .tabbtn{
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--muted);
+      padding:10px 12px;
+      border-radius:999px;
+      cursor:pointer;
+      font-size:.95rem;
+      user-select:none;
+      transition:all .15s ease;
+      font-weight:700;
+    }
+    .tabbtn:hover{border-color:#cbd5e1}
+    .tabbtn.active{
+      color:#fff;
+      background:var(--primary);
+      border-color:var(--primary);
+    }
+
+    .hd{
+      padding:14px 16px 12px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      justify-content:space-between;
+    }
+    .hd h2{
+      margin:0;
+      font-size:1.05rem;
+      font-weight:800;
+    }
+    .hd small{
+      display:block;
+      margin-top:6px;
+      color:var(--muted);
+      line-height:1.35;
+    }
+
+    .bd{padding:16px;}
+    .row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-bottom:12px;
+    }
+    @media (max-width: 760px){
+      .row{grid-template-columns:1fr}
+      header .wrap{flex-direction:column; align-items:flex-start}
+      .hdr-right{text-align:left}
+    }
+
+    label{
+      display:block;
+      font-size:.84rem;
+      color:var(--muted);
+      margin:0 0 6px;
+      font-weight:700;
+    }
+    input, select{
+      width:100%;
+      padding:11px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--text);
+      outline:none;
+      transition:box-shadow .15s ease, border-color .15s ease;
+    }
+    input::placeholder{color:#9ca3af}
+    input:focus, select:focus{
+      border-color:rgba(26,115,232,.55);
+      box-shadow:0 0 0 4px rgba(26,115,232,.14);
+    }
+    input[readonly]{background:#f9fafb;color:#374151}
+
+    .divider{
+      height:1px;
+      background:var(--line);
+      margin:14px 0;
+    }
+
+    .hint{
+      margin-top:8px;
+      color:var(--muted);
+      font-size:.92rem;
+      line-height:1.5;
+    }
+    .small{font-size:.86rem;color:var(--muted);margin-top:6px;line-height:1.35}
+
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+    .btn{
+      border:none;
+      cursor:pointer;
+      border-radius:12px;
+      padding:11px 14px;
+      font-weight:800;
+      letter-spacing:.2px;
+      transition:transform .05s ease, filter .15s ease;
+    }
+    .btn:active{transform:translateY(1px)}
+    .btn.primary{background:var(--primary);color:#fff;}
+    .btn.primary:hover{filter:brightness(.97)}
+    .btn.ghost{background:#fff;color:var(--text);border:1px solid var(--line);}
+    .btn.ghost:hover{border-color:#cbd5e1}
+
+    .subcards{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-top:10px;
+    }
+    @media (max-width: 980px){
+      .subcards{grid-template-columns:1fr}
+    }
+    .subcard{
+      border:1px solid var(--line);
+      border-radius:14px;
+      overflow:hidden;
+      background:#fff;
+    }
+    .subcard .shd{
+      padding:12px 12px 10px;
+      border-bottom:1px solid var(--line);
+      background:#f8fafc;
+    }
+    .subcard .shd h3{margin:0;font-size:.98rem;font-weight:800}
+    .subcard .shd small{display:block;margin-top:5px;color:var(--muted);line-height:1.35}
+    .subcard .sbd{padding:12px}
+
+    .listRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:#fff;
+      margin-bottom:10px;
+    }
+    .listRow .meta{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+    .listRow .meta .m1{font-weight:900}
+    .listRow .meta .m2{color:var(--muted); font-size:.86rem}
+    .listRow .btnSmall{
+      border:1px solid var(--line);
+      background:#fff;
+      color:#111827;
+      padding:8px 10px;
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:800;
+    }
+    .listRow .btnSmall:hover{border-color:#cbd5e1}
+
+    .result{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+    @media (max-width: 760px){
+      .result{grid-template-columns:1fr}
+    }
+    .metric{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+      background:#fff;
+    }
+    .metric .k{font-size:.82rem;color:var(--muted);margin-bottom:6px;font-weight:800}
+    .metric .v{font-size:1.25rem;font-weight:900}
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fff;
+      margin-top:12px;
+      line-height:1.35;
+      font-size:.95rem;
+      font-weight:800;
+    }
+    .badge.ok{border-color:rgba(15,157,88,.35)}
+    .badge.bad{border-color:rgba(217,48,37,.35)}
+    .badge .dot{width:10px;height:10px;border-radius:999px;background:#9ca3af}
+    .badge.ok .dot{background:var(--ok)}
+    .badge.bad .dot{background:var(--danger)}
+
+    .recommend{
+      margin-top:10px;
+      padding:12px;
+      border-radius:14px;
+      border:1px dashed rgba(249,171,0,.55);
+      background:rgba(249,171,0,.10);
+      display:none;
+    }
+    .recommend h3{margin:0 0 6px;font-size:1rem;font-weight:900}
+    .recommend ul{margin:6px 0 0 18px;line-height:1.55}
+
+    .hidden{display:none !important;}
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="wrap">
+      <div class="hdr-left">Loan Servicing Ability (LSA) Ratio Calculator</div>
+      <div class="hdr-right">
+        <div class="t1">Internal working tool</div>
+        <div class="t2">For discussion &amp; illustration only</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <section class="card">
+      <div class="tabs">
+        <button class="tabbtn active" id="tabCorporateBtn" type="button">Corporate Computation</button>
+        <button class="tabbtn" id="tabPersonalBtn" type="button">Personal Computation</button>
+      </div>
+
+      <div class="hd">
+        <div>
+          <h2 id="calcTitle">Corporate Computation</h2>
+          <small id="calcDesc">
+            (EBITDA + Rental Income + 50% of Mortgagor(s) Income + EBITDA of Corporate Guarantor)
+            / (Proposed annual Installment + Current Portion of Long Term Debt)
+          </small>
+        </div>
+      </div>
+
+      <div class="bd">
+
+        <!-- CORPORATE FORM -->
+        <div id="corporateForm">
+          <div class="row">
+            <div>
+              <label>EBITDA of Borrower (S$)</label>
+              <input id="c_ebitdaBorrower" type="text" inputmode="decimal" placeholder="e.g. 500,000" />
+            </div>
+            <div>
+              <label>Rental Income (S$) if not included in EBITDA</label>
+              <input id="c_rentalIncome" type="text" inputmode="decimal" placeholder="e.g. 120,000" />
+              <div class="small">If rental income is already included in EBITDA, leave this as 0.</div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="listRow">
+            <div class="meta">
+              <div class="m1">Mortgagor(s) NOA (max 4)</div>
+              <div class="m2">Average NOA is computed per mortgagor using latest + previous year.</div>
+            </div>
+            <button class="btnSmall" type="button" id="btnAddMortgagorCorp">+ Add Mortgagor</button>
+          </div>
+
+          <div id="corpMortgagors"></div>
+
+          <div class="row">
+            <div>
+              <label>EBITDA of Corporate Guarantor (S$)</label>
+              <input id="c_ebitdaGuarantor" type="text" inputmode="decimal" placeholder="e.g. 250,000" />
+            </div>
+            <div>
+              <label>Proposed Annual Installment (S$)</label>
+              <input id="c_annualInstallment" type="text" inputmode="decimal" placeholder="e.g. 102,000" />
+              <div class="small">Key in 12 months’ total (annual) installment amount.</div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label>Current Portion of Long Term Debt (S$)</label>
+              <input id="c_currentPortionLTD" type="text" inputmode="decimal" placeholder="e.g. 100,000" />
+            </div>
+            <div></div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="hint">
+            <strong>EBITDA Helper (optional)</strong><br/>
+            Key in: Earnings, Interest, Taxes, Depreciation, Amortization → EBITDA is calculated.
+          </div>
+
+          <div class="subcards">
+            <div class="subcard">
+              <div class="shd">
+                <h3>Borrower EBITDA Helper</h3>
+                <small>EBITDA = Earnings + Interest + Taxes + Depreciation + Amortization</small>
+              </div>
+              <div class="sbd">
+                <div class="row">
+                  <div><label>Earnings</label><input id="b_earn" type="text" inputmode="decimal" placeholder="0" /></div>
+                  <div><label>Interest</label><input id="b_int" type="text" inputmode="decimal" placeholder="0" /></div>
+                </div>
+                <div class="row">
+                  <div><label>Taxes</label><input id="b_tax" type="text" inputmode="decimal" placeholder="0" /></div>
+                  <div><label>Depreciation</label><input id="b_dep" type="text" inputmode="decimal" placeholder="0" /></div>
+                </div>
+                <div class="row">
+                  <div><label>Amortization</label><input id="b_amort" type="text" inputmode="decimal" placeholder="0" /></div>
+                  <div>
+                    <label>Computed EBITDA</label>
+                    <input id="b_ebitdaOut" type="text" readonly placeholder="—" />
+                  </div>
+                </div>
+                <div class="actions">
+                  <button class="btn ghost" type="button" id="btnCalcBorrowerEbitda">Compute EBITDA</button>
+                  <button class="btn ghost" type="button" id="btnUseBorrowerEbitda">Use as Borrower EBITDA</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="subcard">
+              <div class="shd">
+                <h3>Guarantor EBITDA Helper</h3>
+                <small>EBITDA = Earnings + Interest + Taxes + Depreciation + Amortization</small>
+              </div>
+              <div class="sbd">
+                <div class="row">
+                  <div><label>Earnings</label><input id="g_earn" type="text" inputmode="decimal" placeholder="0" /></div>
+                  <div><label>Interest</label><input id="g_int" type="text" inputmode="decimal" placeholder="0" /></div>
+                </div>
+                <div class="row">
+                  <div><label>Taxes</label><input id="g_tax" type="text" inputmode="decimal" placeholder="0" /></div>
+                  <div><label>Depreciation</label><input id="g_dep" type="text" inputmode="decimal" placeholder="0" /></div>
+                </div>
+                <div class="row">
+                  <div><label>Amortization</label><input id="g_amort" type="text" inputmode="decimal" placeholder="0" /></div>
+                  <div>
+                    <label>Computed EBITDA</label>
+                    <input id="g_ebitdaOut" type="text" readonly placeholder="—" />
+                  </div>
+                </div>
+                <div class="actions">
+                  <button class="btn ghost" type="button" id="btnCalcGuarEbitda">Compute EBITDA</button>
+                  <button class="btn ghost" type="button" id="btnUseGuarEbitda">Use as Guarantor EBITDA</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PERSONAL FORM -->
+        <div id="personalForm" class="hidden">
+
+          <div class="listRow">
+            <div class="meta">
+              <div class="m1">Mortgagor(s) NOA (max 4)</div>
+              <div class="m2">NOA share auto-applies: 50% if combined average &lt; S$150k, else 60%.</div>
+            </div>
+            <button class="btnSmall" type="button" id="btnAddMortgagorPers">+ Add Mortgagor</button>
+          </div>
+
+          <div id="persMortgagors"></div>
+
+          <div class="row">
+            <div>
+              <label>Other Investment Income (S$)</label>
+              <input id="p_otherInvIncome" type="text" inputmode="decimal" placeholder="e.g. 24,000" />
+            </div>
+            <div>
+              <label>Proposed Annual Installment (S$)</label>
+              <input id="p_annualInstallment" type="text" inputmode="decimal" placeholder="e.g. 62,400" />
+              <div class="small">Key in 12 months’ total (annual) installment amount.</div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label>Property Obligation / Month (S$) (A)</label>
+              <input id="p_propObMonth" type="text" inputmode="decimal" placeholder="e.g. 2,500" />
+              <div class="small">For other properties not financed by IFS.</div>
+            </div>
+            <div>
+              <label>Non-Property &amp; Unsecured Obligation / Month (S$) (B)</label>
+              <input id="p_nonPropObMonth" type="text" inputmode="decimal" placeholder="e.g. 1,200" />
+            </div>
+          </div>
+
+          <input id="p_annualObHidden" type="hidden" />
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="actions">
+          <button class="btn primary" type="button" id="btnCalculate">Calculate LSA</button>
+          <button class="btn ghost" type="button" id="btnReset">Reset</button>
+        </div>
+
+        <div class="result">
+          <div class="metric">
+            <div class="k">Computed LSA Ratio</div>
+            <div class="v" id="lsaOut">—</div>
+          </div>
+          <div class="metric">
+            <div class="k">Pass / Fail (≥ 1.0x)</div>
+            <div class="v" id="passOut">—</div>
+          </div>
+        </div>
+
+        <div class="badge" id="statusBadge" style="display:none;">
+          <span class="dot"></span>
+          <span id="statusText">—</span>
+        </div>
+
+        <div class="recommend" id="recommendBox">
+          <h3>Suggested actions if fail (LSA &lt; 1.0x)</h3>
+          <div id="recommendBody"></div>
+        </div>
+
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    function parseNum(val){
+      if(val === null || val === undefined) return 0;
+      const s = String(val).replace(/[^0-9.-]/g,'');
+      const n = parseFloat(s);
+      return isNaN(n) ? 0 : n;
+    }
+    function fmtMoney(n){
+      if(!isFinite(n)) return "—";
+      const sign = n < 0 ? "-" : "";
+      n = Math.abs(n);
+      return sign + n.toLocaleString(undefined, {maximumFractionDigits: 2});
+    }
+    function fmtRatio(n){
+      if(!isFinite(n)) return "—";
+      return n.toFixed(2) + "x";
+    }
+    function setBadge(isPass, text){
+      const badge = $("statusBadge");
+      badge.style.display = "inline-flex";
+      badge.classList.remove("ok","bad");
+      badge.classList.add(isPass ? "ok" : "bad");
+      $("statusText").textContent = text;
+    }
+
+    function attachMoneyFormat(ids){
+      ids.forEach(id=>{
+        const el = $(id);
+        if(!el) return;
+        el.addEventListener("blur", ()=>{
+          const n = parseNum(el.value);
+          el.value = (el.value.trim()==="") ? "" : fmtMoney(n);
+        });
+      });
+    }
+
+    // ---------- Mortgagor blocks ----------
+    function mortgagorBlock(idx, prefix){
+      const div = document.createElement("div");
+      div.className = "card";
+      div.style.boxShadow = "none";
+      div.style.marginBottom = "12px";
+
+      div.innerHTML = `
+        <div class="hd" style="padding:12px 14px; border-bottom:1px solid var(--line); background:#f8fafc;">
+          <div style="font-weight:900;">Mortgagor ${idx}</div>
+          <button type="button" class="btnSmall" data-remove="1" style="font-weight:900;">Remove</button>
+        </div>
+        <div class="bd" style="padding:14px;">
+          <div class="row">
+            <div>
+              <label>Latest Year NOA (S$) of Mortgagor ${idx}</label>
+              <input id="${prefix}_noa_latest_${idx}" type="text" inputmode="decimal" placeholder="e.g. 180,000" />
+            </div>
+            <div>
+              <label>Previous Year NOA (S$) of Mortgagor ${idx}</label>
+              <input id="${prefix}_noa_prev_${idx}" type="text" inputmode="decimal" placeholder="e.g. 160,000" />
+            </div>
+          </div>
+        </div>
+      `;
+      return div;
+    }
+
+    function getMortgagorCount(container){
+      return container.querySelectorAll("[data-mortgagor='1']").length;
+    }
+
+    function addMortgagor(containerId, prefix){
+      const container = $(containerId);
+      const count = getMortgagorCount(container);
+      if(count >= 4) return;
+
+      const idx = count + 1;
+      const block = mortgagorBlock(idx, prefix);
+      block.setAttribute("data-mortgagor", "1");
+
+      block.querySelector("[data-remove='1']").addEventListener("click", ()=>{
+        block.remove();
+        renumberMortgagors(container, prefix);
+      });
+
+      container.appendChild(block);
+
+      attachMoneyFormat([`${prefix}_noa_latest_${idx}`, `${prefix}_noa_prev_${idx}`]);
+    }
+
+    function renumberMortgagors(container, prefix){
+      const blocks = Array.from(container.querySelectorAll("[data-mortgagor='1']"));
+      blocks.forEach((block, i)=>{
+        const idx = i + 1;
+        block.querySelector(".hd div").textContent = `Mortgagor ${idx}`;
+
+        const latestInput = block.querySelector(`input[id^='${prefix}_noa_latest_']`);
+        const prevInput   = block.querySelector(`input[id^='${prefix}_noa_prev_']`);
+
+        const labels = block.querySelectorAll("label");
+        labels[0].textContent = `Latest Year NOA (S$) of Mortgagor ${idx}`;
+        labels[1].textContent = `Previous Year NOA (S$) of Mortgagor ${idx}`;
+
+        latestInput.id = `${prefix}_noa_latest_${idx}`;
+        prevInput.id   = `${prefix}_noa_prev_${idx}`;
+      });
+    }
+
+    function sumCombinedAverageNOA(prefix, containerId){
+      const container = $(containerId);
+      const blocks = Array.from(container.querySelectorAll("[data-mortgagor='1']"));
+      if(blocks.length === 0) return 0;
+
+      let sumAvg = 0;
+      for(let i=1; i<=blocks.length; i++){
+        const latest = parseNum($(`${prefix}_noa_latest_${i}`).value);
+        const prev   = parseNum($(`${prefix}_noa_prev_${i}`).value);
+        sumAvg += (latest + prev) / 2;
+      }
+      return sumAvg;
+    }
+
+    // ---------- Tabs ----------
+    const tabCorporateBtn = $("tabCorporateBtn");
+    const tabPersonalBtn  = $("tabPersonalBtn");
+    const corporateForm   = $("corporateForm");
+    const personalForm    = $("personalForm");
+
+    function setMode(mode){
+      const isCorp = mode === "corp";
+      tabCorporateBtn.classList.toggle("active", isCorp);
+      tabPersonalBtn.classList.toggle("active", !isCorp);
+      corporateForm.classList.toggle("hidden", !isCorp);
+      personalForm.classList.toggle("hidden", isCorp);
+
+      if(isCorp){
+        $("calcTitle").textContent = "Corporate Computation";
+        $("calcDesc").textContent =
+          "(EBITDA + Rental Income + 50% of Mortgagor(s) Income + EBITDA of Corporate Guarantor) / (Proposed annual Installment + Current Portion of Long Term Debt)";
+      }else{
+        $("calcTitle").textContent = "Personal Computation";
+        $("calcDesc").textContent =
+          "(Auto % of Mortgagor(s) NOA + Other Investment Income) / (Proposed annual Installment + Annual loan repayment obligations)";
+      }
+
+      $("lsaOut").textContent = "—";
+      $("passOut").textContent = "—";
+      $("statusBadge").style.display = "none";
+      $("recommendBox").style.display = "none";
+    }
+
+    tabCorporateBtn.addEventListener("click", ()=> setMode("corp"));
+    tabPersonalBtn.addEventListener("click", ()=> setMode("personal"));
+
+    // ---------- EBITDA helpers ----------
+    function computeEbitda(prefix){
+      const earn = parseNum($(prefix+"_earn").value);
+      const intr = parseNum($(prefix+"_int").value);
+      const tax  = parseNum($(prefix+"_tax").value);
+      const dep  = parseNum($(prefix+"_dep").value);
+      const am   = parseNum($(prefix+"_amort").value);
+      const ebitda = earn + intr + tax + dep + am;
+      $(prefix+"_ebitdaOut").value = fmtMoney(ebitda);
+      return ebitda;
+    }
+
+    $("btnCalcBorrowerEbitda").addEventListener("click", ()=> computeEbitda("b"));
+    $("btnCalcGuarEbitda").addEventListener("click", ()=> computeEbitda("g"));
+
+    $("btnUseBorrowerEbitda").addEventListener("click", ()=>{
+      const e = computeEbitda("b");
+      $("c_ebitdaBorrower").value = fmtMoney(e);
+    });
+    $("btnUseGuarEbitda").addEventListener("click", ()=>{
+      const e = computeEbitda("g");
+      $("c_ebitdaGuarantor").value = fmtMoney(e);
+    });
+
+    // ---------- Add mortgagors ----------
+    $("btnAddMortgagorCorp").addEventListener("click", ()=> addMortgagor("corpMortgagors","c"));
+    $("btnAddMortgagorPers").addEventListener("click", ()=> addMortgagor("persMortgagors","p"));
+
+    // ---------- Calculate ----------
+    function corporateFailHTML(){
+      return `
+        <ul>
+          <li>Collect upfront interest (min 6 months) ;</li>
+          <li>Or cap LTV:
+            <ul>
+              <li>LTV ≤ 70% for residential</li>
+              <li>LTV ≤ 65% for commercial</li>
+              <li>LTV ≤ 55% for industrial</li>
+            </ul>
+          </li>
+        </ul>
+      `;
+    }
+    function personalFailHTML(){
+      return `
+        <ul>
+          <li>Cap LTV:
+            <ul>
+              <li>LTV ≤ 70% for residential</li>
+              <li>LTV ≤ 65% for commercial</li>
+              <li>LTV ≤ 55% for industrial</li>
+            </ul>
+          </li>
+        </ul>
+      `;
+    }
+
+    $("btnCalculate").addEventListener("click", ()=>{
+      const isCorp = tabCorporateBtn.classList.contains("active");
+      let lsa = NaN;
+
+      if(isCorp){
+        const ebitdaBorrower = parseNum($("c_ebitdaBorrower").value);
+        const rentalIncome   = parseNum($("c_rentalIncome").value);
+
+        const mortgAvgSum = sumCombinedAverageNOA("c", "corpMortgagors");
+        const ebitdaGuar  = parseNum($("c_ebitdaGuarantor").value);
+
+        const annualInst  = parseNum($("c_annualInstallment").value);
+        const currentLTD  = parseNum($("c_currentPortionLTD").value);
+
+        const numerator = ebitdaBorrower + rentalIncome + (0.5 * mortgAvgSum) + ebitdaGuar;
+        const denom = annualInst + currentLTD;
+        lsa = denom > 0 ? (numerator / denom) : NaN;
+
+      }else{
+        const mortgAvgSum = sumCombinedAverageNOA("p", "persMortgagors");
+        const noaShare = (mortgAvgSum < 150000) ? 0.5 : 0.6;
+
+        const otherInv = parseNum($("p_otherInvIncome").value);
+        const annualInst = parseNum($("p_annualInstallment").value);
+
+        const A = parseNum($("p_propObMonth").value);
+        const B = parseNum($("p_nonPropObMonth").value);
+        const annualOb = (A + B) * 12;
+
+        $("p_annualObHidden").value = String(annualOb);
+
+        const numerator = (noaShare * mortgAvgSum) + otherInv;
+        const denom = annualInst + annualOb;
+        lsa = denom > 0 ? (numerator / denom) : NaN;
+      }
+
+      const isPass = isFinite(lsa) && lsa >= 1.0;
+
+      $("lsaOut").textContent  = isFinite(lsa) ? fmtRatio(lsa) : "—";
+      $("passOut").textContent = isFinite(lsa) ? (isPass ? "PASS" : "FAIL") : "—";
+
+      if(!isFinite(lsa)){
+        setBadge(false, "Please ensure denominator inputs are provided (annual installment + obligations / debt must be > 0).");
+        $("recommendBox").style.display = "none";
+        return;
+      }
+
+      if(isPass){
+        setBadge(true, "LSA ≥ 1.0x — Pass.");
+        $("recommendBox").style.display = "none";
+      }else{
+        setBadge(false, "LSA < 1.0x — Fail.");
+        $("recommendBox").style.display = "block";
+        $("recommendBody").innerHTML = isCorp ? corporateFailHTML() : personalFailHTML();
+      }
+    });
+
+    // ---------- Reset ----------
+    $("btnReset").addEventListener("click", ()=>{
+      document.querySelectorAll("input").forEach(i=>{
+        if(i.hasAttribute("readonly")) return;
+        i.value = "";
+      });
+
+      $("corpMortgagors").innerHTML = "";
+      $("persMortgagors").innerHTML = "";
+      addMortgagor("corpMortgagors","c");
+      addMortgagor("persMortgagors","p");
+
+      $("b_ebitdaOut").value = "";
+      $("g_ebitdaOut").value = "";
+      $("lsaOut").textContent = "—";
+      $("passOut").textContent = "—";
+      $("statusBadge").style.display = "none";
+      $("recommendBox").style.display = "none";
+      setMode(tabCorporateBtn.classList.contains("active") ? "corp" : "personal");
+    });
+
+    // ---------- formatting ----------
+    attachMoneyFormat([
+      "c_ebitdaBorrower","c_rentalIncome","c_ebitdaGuarantor","c_annualInstallment","c_currentPortionLTD",
+      "b_earn","b_int","b_tax","b_dep","b_amort",
+      "g_earn","g_int","g_tax","g_dep","g_amort",
+      "p_otherInvIncome","p_annualInstallment","p_propObMonth","p_nonPropObMonth"
+    ]);
+
+    // init
+    addMortgagor("corpMortgagors","c");
+    addMortgagor("persMortgagors","p");
+    setMode("corp");
+  </script>
+</body>
+</html>

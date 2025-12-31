@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Property Loan • Instalment Finder + Servicing Schedule</title>
+<style>
+  body{font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:#f5f7fa;margin:0;padding:20px;color:#333;}
+  .wrap{max-width:1200px;margin:0 auto;display:flex;flex-direction:column;gap:16px;}
+  .card{background:#fff;padding:22px;border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,0.08);}
+  h2{margin:0 0 6px 0;color:#1a73e8;font-size:20px;}
+  .sub{margin:0 0 14px 0;color:#5f6368;font-size:13px;line-height:1.35;}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+  @media (max-width:980px){.grid{grid-template-columns:repeat(2,1fr);}}
+  @media (max-width:520px){.grid{grid-template-columns:1fr;}}
+  label{font-weight:600;font-size:13px;color:#202124;}
+  input,select{width:100%;padding:10px 10px;margin-top:6px;border:1px solid #dadce0;border-radius:8px;outline:none;font-size:14px;background:#fff;box-sizing:border-box;}
+  input:focus,select:focus{border-color:#1a73e8;box-shadow:0 0 0 3px rgba(26,115,232,0.15);}
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;align-items:center;}
+  button{padding:10px 16px;background:#1a73e8;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:14px;}
+  button.secondary{background:#eef3fd;color:#1a73e8;}
+  button:hover{filter:brightness(0.97);}
+  .pillrow{margin-top:12px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+  @media (max-width:980px){.pillrow{grid-template-columns:repeat(2,1fr);}}
+  @media (max-width:520px){.pillrow{grid-template-columns:1fr;}}
+  .pill{background:#f8f9fa;border:1px solid #e6e8eb;border-radius:10px;padding:10px 12px;}
+  .pill .k{font-size:12px;color:#5f6368;margin-bottom:4px;}
+  .pill .v{font-size:15px;font-weight:800;color:#202124;}
+  .error{margin-top:12px;padding:10px 12px;border:1px solid #f1c0c0;background:#fff5f5;color:#8a1f1f;border-radius:10px;font-size:13px;display:none;line-height:1.35;}
+  .warn{margin-top:12px;padding:10px 12px;border:1px solid #f3d19e;background:#fff7ed;color:#8a5a00;border-radius:10px;font-size:13px;display:none;line-height:1.35;}
+  .note{margin-top:10px;color:#5f6368;font-size:12px;line-height:1.35;}
+  table{width:100%;border-collapse:collapse;margin-top:14px;border-radius:10px;overflow:hidden;}
+  th,td{border:1px solid #e6e8eb;padding:8px 10px;font-size:12.5px;text-align:right;white-space:nowrap;}
+  th{background:#f0f4ff;text-align:center;font-weight:800;color:#1f3b82;}
+  td:nth-child(1),th:nth-child(1){text-align:center;}
+  td:nth-child(2),th:nth-child(2){text-align:center;}
+  td:nth-child(3),th:nth-child(3){text-align:center;}
+  td:nth-child(4),th:nth-child(4){text-align:center;}
+  td:nth-child(5),th:nth-child(5){text-align:center;}
+  tfoot td{font-weight:900;background:#fafafa;}
+  .badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:800;border:1px solid #e6e8eb;background:#f8f9fa;color:#5f6368;margin-left:6px;}
+  .negRow td{background:#fff5f5;}
+  .negRow td:nth-child(7), .negRow td:nth-child(6){font-weight:900;color:#8a1f1f;}
+  #criteriaInfo{margin-top:6px;padding:12px 12px;border:1px solid #e6e8eb;background:#f8f9fa;border-radius:10px;font-size:13px;color:#202124;line-height:1.4;}
+  @media print{body{background:#fff;padding:0;} .card{box-shadow:none;border-radius:0;} .actions,.note{display:none;}}
+
+
+/* --- Top Bar (shared) --- */
+.top-bar{
+  padding: 10px 24px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 50 !important;
+}
+
+.brand{ display:flex !important; align-items:center !important; gap:10px !important; }
+.brand-logo{ height:32px !important; display:flex !important; align-items:center !important; }
+.brand-logo img{ height:32px !important; display:block !important; }
+
+.brand-text-main{
+  font-weight:700 !important;
+  letter-spacing:0.03em !important;
+  text-transform:uppercase !important;
+  font-size:13px !important;
+}
+
+.brand-text-sub{
+  font-size:11px !important;
+  opacity:0.75 !important;
+  text-transform:uppercase !important;
+  letter-spacing:0.09em !important;
+}
+
+.top-bar-right{
+  text-align:right !important;
+  font-size:12px !important;
+  line-height:1.2 !important;
+}
+.top-bar-right strong{ font-weight:800 !important; }
+
+
+/* --- Remove top gap to match ABL --- */
+html, body { margin: 0 !important; padding: 0 !important; }
+.top-bar { margin: 0 !important; }
+body > header.top-bar { margin-top: 0 !important; }
+
+
+/* ===============================
+   Unified UI Theme (override)
+   Market-practice: tokenized design system + accessible contrast
+   =============================== */
+:root{
+  --ui-font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+  --ui-bg: #f6f7fb;
+  --ui-surface: #ffffff;
+  --ui-surface-2: #f9fafb;
+  --ui-text: #0f172a;
+  --ui-muted: #475569;
+  --ui-border: #e2e8f0;
+
+  --ui-primary: #1d4ed8;      /* blue-700 */
+  --ui-primary-600: #2563eb;  /* blue-600 */
+  --ui-primary-800: #1e40af;  /* blue-800 */
+  --ui-success: #059669;      /* emerald-600 */
+  --ui-danger: #b91c1c;       /* red-700 */
+  --ui-warn: #b45309;         /* amber-700 */
+
+  --ui-radius: 14px;
+  --ui-radius-sm: 10px;
+  --ui-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+  --ui-shadow-sm: 0 6px 18px rgba(15, 23, 42, 0.08);
+}
+
+*{ font-family: var(--ui-font) !important; }
+
+body{
+  background: var(--ui-bg) !important;
+  color: var(--ui-text) !important;
+}
+
+h1,h2,h3{
+  color: var(--ui-text) !important;
+  letter-spacing: -0.01em;
+}
+
+.subtitle,.sub,.note,.footer-note,.muted,.section-subtitle,.hero-subtitle,.brand-text-sub,.top-bar-right{
+  color: var(--ui-muted) !important;
+}
+
+/* Cards / sections */
+.card,.section{
+  border-radius: var(--ui-radius) !important;
+  box-shadow: var(--ui-shadow) !important;
+  border: 1px solid var(--ui-border) !important;
+  background: var(--ui-surface) !important;
+}
+
+.result-item,.pill,.result-box,#criteriaInfo{
+  border-radius: var(--ui-radius-sm) !important;
+  border-color: var(--ui-border) !important;
+}
+
+input,select,textarea,
+input[type="text"],input[type="number"]{
+  border-radius: 10px !important;
+  border: 1px solid var(--ui-border) !important;
+  background: #fff !important;
+  color: var(--ui-text) !important;
+}
+
+input:focus,select:focus,textarea:focus{
+  border-color: var(--ui-primary-600) !important;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.16) !important;
+  outline: none !important;
+}
+
+/* Buttons */
+button,
+.btn-primary,.btn-print,
+.btn-secondary,.btn-outline,
+button.secondary{
+  border-radius: 999px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.01em;
+}
+
+button:not(.secondary):not(.btn-secondary):not(.btn-outline),
+.btn-primary{
+  background: var(--ui-primary-600) !important;
+  color: #fff !important;
+  box-shadow: 0 10px 22px rgba(37, 99, 235, 0.22) !important;
+}
+
+.btn-primary:hover, button:not(.secondary):not(.btn-secondary):not(.btn-outline):hover{
+  background: var(--ui-primary) !important;
+}
+
+.btn-print{
+  background: var(--ui-success) !important;
+  box-shadow: 0 10px 22px rgba(5, 150, 105, 0.20) !important;
+}
+.btn-print:hover{ background: #047857 !important; }
+
+button.secondary, .btn-secondary{
+  background: #ffffff !important;
+  color: var(--ui-primary-800) !important;
+  border: 1px solid var(--ui-border) !important;
+  box-shadow: none !important;
+}
+
+.btn-outline{
+  background: #ffffff !important;
+  color: var(--ui-primary-800) !important;
+  border: 1px solid rgba(37, 99, 235, 0.45) !important;
+}
+
+/* Tables */
+table{ border-color: var(--ui-border) !important; }
+th{
+  background: rgba(37, 99, 235, 0.08) !important;
+  color: var(--ui-primary-800) !important;
+}
+.breakdown-table th{ background: rgba(37, 99, 235, 0.08) !important; }
+
+/* Notices */
+.error{ border-color: rgba(185, 28, 28, 0.25) !important; color: var(--ui-danger) !important; }
+.warn{ border-color: rgba(180, 83, 9, 0.25) !important; color: var(--ui-warn) !important; }
+
+/* Top bar (if present) */
+.top-bar{
+  background: var(--ui-surface) !important;
+  border-bottom: 1px solid var(--ui-border) !important;
+}
+
+/* Print */
+@media print{
+  body{ background:#fff !important; }
+  .card,.section{ box-shadow:none !important; }
+}
+</style>
+</head>
+<body>
+
+  <header class="top-bar">
+    <div class="brand">
+      <div class="brand-logo"></div>
+      <div>
+        <div class="brand-text-main"></div>
+        <div class="brand-text-sub">Installment Finder and Servicing Schedule</div>
+      </div>
+    </div>
+    <div class="top-bar-right">
+      <div><strong>Internal working tool</strong></div>
+      <div>For discussion &amp; illustration only</div>
+    </div>
+  </header>
+
+<div class="wrap">
+
+  <div class="card">
+    <h2>A) Instalment Finder</h2>
+    <p class="sub">
+      Use standard amortization (e.g. 25 years = 300 instalments) to derive a fixed monthly instalment.
+      Instalment is calculated using monthly rate (Rate/12) and <b>rounded up</b> to the next whole dollar.
+    </p>
+
+    <div class="grid">
+      <div>
+        <label>Loan Amount</label>
+        <input id="ifLoan" type="number" min="0" step="0.01" placeholder="e.g. 700000">
+      </div>
+      <div>
+        <label>Interest Rate (% p.a.)</label>
+        <input id="ifRate" type="number" min="0" step="0.01" placeholder="e.g. 7.00">
+      </div>
+      <div>
+        <label>Amortization Term (Years)</label>
+        <select id="ifYears">
+          <option value="10">10</option>
+          <option value="15">15</option>
+          <option value="20">20</option>
+          <option value="25" selected>25</option>
+        </select>
+      </div>
+      <div>
+        <label>Derived Instalment (rounded up)</label>
+        <input id="ifInstal" type="text" readonly>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="btnComputeInstal" type="button" onclick="computeInstalment()">Compute Instalment</button>
+      <button id="btnUseInstal" type="button" class="secondary" onclick="useInstalment()">Use this Instalment in Schedule</button>
+      <button type="button" class="secondary" onclick="window.print()">Print / Save as PDF</button>
+    </div>
+
+    <div id="ifError" class="error"></div>
+    <div id="ifSummary" class="pillrow" style="display:none;"></div>
+
+    <p class="note">
+      Formula: EMI = P × r × (1+r)^n / ((1+r)^n − 1), where r = annual rate / 12, n = years × 12.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>B) Servicing Schedule</h2>
+    <p class="sub">
+      Interest uses <b>Actual Days / 365</b> (XLS style). Interest From = previous Due Date (or Disbursement Date for row 1),
+      Interest To = current Due Date − 1 day. Weekend due dates are adjusted while staying within the same month (XLS style).
+    </p>
+
+    <div class="grid">
+      <div>
+        <label>Loan Amount</label>
+        <input id="scLoan" type="number" min="0" step="0.01" placeholder="e.g. 700000">
+      </div>
+      <div>
+        <label>Interest Rate (% p.a.)</label>
+        <input id="scRate" type="number" min="0" step="0.01" placeholder="e.g. 7.00">
+      </div>
+      <div>
+        <label>Disbursement Date (DD-MM-YYYY)</label>
+        <input id="scDisb" type="text" inputmode="numeric" placeholder="e.g. 30-04-2025">
+      </div>
+      <div>
+        <label>Property Type</label>
+        <select id="scPropType">
+          <option value="industrial">Industrial</option>
+          <option value="residential">Residential</option>
+          <option value="commercial">Commercial</option>
+        </select>
+      </div>
+      <div>
+        <label>Loan Tenor (Years) <span class="badge">max 5</span></label>
+        <input id="scTenorYears" type="number" min="1" max="5" step="1" value="5">
+      </div>
+
+      <div>
+        <label>No. of Interest Servicing Upfront (months)</label>
+        <input id="scUpfront" type="number" min="0" step="1" value="0">
+      </div>
+      <div>
+        <label>Instalment Amount (manual / from Finder)</label>
+        <div style="margin-top:6px; font-size:12px; color:#5f6368;">Not required if “Full interest servicing only” is selected.</div>
+        <input id="scInstal" type="number" min="0" step="1" placeholder="e.g. 4948">
+      </div>
+
+      <div style="grid-column: span 4;">
+        <label style="display:block;">Options</label>
+        <div style="margin-top:8px; display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+          <label style="display:flex;gap:8px;align-items:center;font-weight:600;font-size:13px;">
+            <input id="scFullInterest" type="checkbox">
+            Full interest servicing only (no instalment input needed)
+          </label>
+
+          <label style="display:flex;gap:8px;align-items:center;font-weight:600;font-size:13px;">
+            <input id="scCriteria" type="checkbox" checked>
+            Apply credit criteria: upfront cap + year-end 3% p.a. principal paydown check (for tenor &gt; 3 years)
+          </label>
+        </div>
+      </div>
+
+      <div style="grid-column: span 4;">
+        <div id="criteriaInfo"></div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="btnGenSchedule" type="button" onclick="generateSchedule()">Generate Schedule</button>
+      <button id="btnResetSchedule" type="button" class="secondary" onclick="resetSchedule()">Reset</button>
+      <button type="button" class="secondary" onclick="window.print()">Print / Save as PDF</button>
+      <span id="statusBar" style="margin-left:auto; color:#5f6368; font-size:12px;"></span>
+    </div>
+
+    <div id="scError" class="error"></div>
+    <div id="scWarn" class="warn"></div>
+    <div id="scSummary" class="pillrow" style="display:none;"></div>
+    <div id="scResult"></div>
+
+    <p class="note">
+      Interest per row: ROUND(Opening Balance × Annual Rate × Days / 365, 2).
+      Principal = Instalment − Interest (after upfront period). Last row always settles outstanding.
+    </p>
+  </div>
+
+</div>
+
+<script>
+"use strict";
+window.__lastSchedule = null;
+
+
+function formatDDMMYYYY(d){
+  if (!(d instanceof Date) || isNaN(d)) return "-";
+  const dd = String(d.getDate()).padStart(2,"0");
+  const mm = String(d.getMonth()+1).padStart(2,"0");
+  const yyyy = d.getFullYear();
+  return dd + "-" + mm + "-" + yyyy;
+}
+
+// ---------- Helpers ----------
+function fmtMoney(x){
+  if (!isFinite(x)) return "-";
+  return x.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+function round2(x){ return Math.round((x + Number.EPSILON)*100)/100; }
+function ceilDollar(x){ return x >= 0 ? Math.ceil(x - 1e-12) : Math.floor(x + 1e-12); }
+
+function showBox(id,msg){
+  const el=document.getElementById(id);
+  if (!el) return;
+  el.style.display="block";
+  el.innerHTML=msg;
+}
+function clearBox(id){
+  const el=document.getElementById(id);
+  if (!el) return;
+  el.style.display="none";
+  el.innerHTML="";
+}
+
+function addDays(dateObj, days){
+  const d=new Date(dateObj.getTime());
+  d.setDate(d.getDate()+days);
+  return d;
+}
+function addMonths(dateObj, months){
+  const d=new Date(dateObj.getTime());
+  const day=d.getDate();
+  d.setMonth(d.getMonth()+months);
+  if (d.getDate() < day) d.setDate(0);
+  return d;
+}
+function adjustToBusinessDaySameMonth(dateObj){
+  const d=new Date(dateObj.getTime());
+  const originalMonth=d.getMonth();
+  const wd=d.getDay(); // 0 Sun, 6 Sat
+  if (wd===6){ // Sat -> try Mon else Fri
+    const f=new Date(d.getTime()); f.setDate(f.getDate()+2);
+    if (f.getMonth()===originalMonth) return f;
+    d.setDate(d.getDate()-1); return d;
+  }
+  if (wd===0){ // Sun -> try Mon else Fri
+    const f=new Date(d.getTime()); f.setDate(f.getDate()+1);
+    if (f.getMonth()===originalMonth) return f;
+    d.setDate(d.getDate()-2); return d;
+  }
+  return d;
+}
+function parseDDMMYYYY(str){
+  const s=String(str||"").trim();
+  if (!s) return null;
+  let dd,mm,yyyy;
+  if (/^\d{2}-\d{2}-\d{4}$/.test(s)){
+    [dd,mm,yyyy]=s.split("-").map(x=>parseInt(x,10));
+  } else if (/^\d{2}\/\d{2}\/\d{4}$/.test(s)){
+    [dd,mm,yyyy]=s.split("/").map(x=>parseInt(x,10));
+  } else if (/^\d{8}$/.test(s)){
+    dd=parseInt(s.slice(0,2),10);
+    mm=parseInt(s.slice(2,4),10);
+    yyyy=parseInt(s.slice(4,8),10);
+  } else return null;
+
+  if (!(yyyy>=1900 && yyyy<=2100)) return null;
+  if (!(mm>=1 && mm<=12)) return null;
+  if (!(dd>=1 && dd<=31)) return null;
+
+  const d=new Date(Date.UTC(yyyy,mm-1,dd));
+  if (d.getUTCFullYear()!==yyyy || (d.getUTCMonth()+1)!==mm || d.getUTCDate()!==dd) return null;
+  return new Date(yyyy,mm-1,dd,0,0,0);
+}
+
+// ---------- Instalment Finder ----------
+function computeInstalment(){
+  try{ const sb=document.getElementById("statusBar"); if(sb) sb.textContent=""; }catch(e){}
+  clearBox("ifError");
+  const P=parseFloat(document.getElementById("ifLoan").value);
+  const ratePct=parseFloat(document.getElementById("ifRate").value);
+  const years=parseInt(document.getElementById("ifYears").value,10);
+
+  if (!isFinite(P) || P<=0) return showBox("ifError","Please enter a valid Loan Amount.");
+  if (!isFinite(ratePct) || ratePct<0) return showBox("ifError","Please enter a valid Interest Rate.");
+  if (!Number.isInteger(years) || years<=0) return showBox("ifError","Please select a valid amortization term.");
+
+  const annual=ratePct/100;
+  const r=annual/12;
+  const n=years*12;
+
+  let emi;
+  if (r===0) emi = P/n;
+  else {
+    const pow=Math.pow(1+r,n);
+    emi = P*r*pow/(pow-1);
+  }
+  emi = ceilDollar(emi);
+
+  document.getElementById("ifInstal").value = fmtMoney(emi);
+
+  const sum=document.getElementById("ifSummary");
+  sum.style.display="grid";
+  sum.innerHTML = `
+    <div class="pill"><div class="k">Amort Months</div><div class="v">${n.toLocaleString()}</div></div>
+    <div class="pill"><div class="k">Monthly Rate</div><div class="v">${(r*100).toFixed(4)}%</div></div>
+    <div class="pill"><div class="k">Derived Instalment</div><div class="v">${fmtMoney(emi)}</div></div>
+    <div class="pill"><div class="k">Rounding</div><div class="v">Rounded up to $1</div></div>
+  `;
+}
+
+function useInstalment(){
+  clearBox("ifError");
+  const txt=document.getElementById("ifInstal").value;
+  if (!txt) return showBox("ifError","Compute an instalment first.");
+  const val=parseFloat(txt.replace(/,/g,""));
+  if (!isFinite(val) || val<=0) return showBox("ifError","Derived instalment is invalid.");
+
+  document.getElementById("scInstal").value = String(Math.round(val));
+  if (document.getElementById("ifLoan").value) document.getElementById("scLoan").value = document.getElementById("ifLoan").value;
+  if (document.getElementById("ifRate").value) document.getElementById("scRate").value = document.getElementById("ifRate").value;
+  updateCriteriaInfo();
+
+  if (!fullInterestMode && applyCriteria && window.__yearEndFail) {
+    showBox(
+      "scWarn",
+      "⚠️ Credit criteria not met: outstanding principal fails the required 3% p.a. year-end paydown test. " +
+      "Increase instalment, or use the suggested instalment shown in the Credit Criteria Helper."
+    );
+  }
+  document.getElementById("scLoan").scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+// ---------- Criteria / Year-end targets ----------
+function buildTargets(P0, tenorYears, upfrontMonths){
+  const upfrontYears = Math.ceil(upfrontMonths/12);
+  const targets = {}; // month -> target outstanding
+  for (let y=1;y<=tenorYears;y++){
+    const paydownYearsCompleted=Math.max(0, y-upfrontYears);
+    if (paydownYearsCompleted>=1){
+      const monthIdx=y*12;
+      const targetPct=Math.max(0, 1-0.03*paydownYearsCompleted);
+      targets[monthIdx]=round2(P0*targetPct);
+    }
+  }
+  return targets;
+}
+
+function simulateSchedule(P0, ratePct, disb, tenorYears, upfrontMonths, instalment){
+  const annual = ratePct/100;
+  const termMonths=tenorYears*12;
+  let balance=round2(P0);
+  let prevDue=new Date(disb.getTime());
+  const b={};
+  const msPerDay=24*60*60*1000;
+
+  for (let i=1;i<=termMonths;i++){
+    const due=adjustToBusinessDaySameMonth(addMonths(disb,i));
+    const interestFrom=new Date(prevDue.getTime());
+    const interestTo=addDays(due,-1);
+    const days=Math.round((interestTo-interestFrom)/msPerDay)+1;
+    const interest=round2(balance*annual*days/365);
+
+    let principal=0, pay=0, newBal=balance;
+    if (i<=upfrontMonths){
+      pay=interest; principal=0; newBal=balance;
+    } else {
+      pay=round2(instalment);
+      principal=round2(pay-interest);
+      if (principal<0) principal=0;
+      if (i===termMonths){
+        principal=balance;
+        pay=round2(interest+principal);
+      }
+      if (principal>balance){
+        principal=balance;
+        pay=round2(interest+principal);
+      }
+      newBal=round2(balance-principal);
+    }
+    b[i]=Math.max(0,newBal);
+    balance=newBal;
+    prevDue=due;
+  }
+  return b;
+}
+
+function passesTargets(balancesByMonth, targets){
+  for (const k of Object.keys(targets)){
+    const m=parseInt(k,10);
+    const tgt=targets[k];
+    const act=balancesByMonth[m];
+    if (act==null) return false;
+    if (act>tgt+0.01) return false;
+  }
+  return true;
+}
+
+function findSuggestedInstalment(P0, ratePct, disb, tenorYears, upfrontMonths, targets, startGuess){
+  let low=Math.max(1, Math.ceil(startGuess||1));
+  let high=low;
+
+  let guard=0;
+  while (guard<40){
+    const b=simulateSchedule(P0, ratePct, disb, tenorYears, upfrontMonths, high);
+    if (passesTargets(b, targets)) break;
+    high=Math.ceil(high*1.25+50);
+    guard++;
+  }
+  if (guard>=40) return null;
+
+  while (low<high){
+    const mid=Math.floor((low+high)/2);
+    const b=simulateSchedule(P0, ratePct, disb, tenorYears, upfrontMonths, mid);
+    if (passesTargets(b, targets)) high=mid;
+    else low=mid+1;
+  }
+  return low;
+}
+
+function updateCriteriaInfo(){
+  const box=document.getElementById("criteriaInfo");
+  if (!box) return;
+
+  const propType=document.getElementById("scPropType").value;
+  const typeLabel = (propType==="industrial") ? "Industrial" : (propType==="residential" ? "Residential" : "Commercial");
+  const maxUpfront = (propType==="industrial") ? 12 : 24;
+
+  let tenorYears=parseInt(document.getElementById("scTenorYears").value,10);
+  if (!Number.isInteger(tenorYears) || tenorYears<1) tenorYears=1;
+  if (tenorYears>5) tenorYears=5;
+  const termMonths=tenorYears*12;
+
+  let upfront=parseInt(document.getElementById("scUpfront").value,10);
+  if (!Number.isInteger(upfront) || upfront<0) upfront=0;
+
+// Hide the credit criteria helper unless Interest Servicing Upfront > 1 month
+if (upfront <= 1) {
+  box.style.display = "none";
+  box.innerHTML = "";
+  return;
+} else {
+  box.style.display = "block";
+}
+
+// Hide criteria helper for full-interest-servicing loans (no amortization)
+const fullInterestMode = document.getElementById("scFullInterest") ? document.getElementById("scFullInterest").checked : false;
+if (fullInterestMode) {
+  box.style.display = "none";
+  box.innerHTML = "";
+  return;
+}
+  const applyCriteria=document.getElementById("scCriteria").checked;
+  const criteriaApplies = applyCriteria && (tenorYears>3) && (upfront>0);
+
+  const P0=parseFloat(document.getElementById("scLoan").value);
+  const reqPrinMonthly = (isFinite(P0) && P0>0) ? round2((P0*0.03)/12) : null;
+
+  let out = `<b>Credit criteria helper</b>
+    <div style="margin-top:6px; color:#5f6368; font-size:12px;">Applies when <b>Tenor &gt; 3 years</b> and <b>Interest Servicing Upfront &gt; 0</b>.</div>
+    <div style="margin-top:10px;"><b>Property Type:</b> ${typeLabel} &nbsp; <span class="badge">Tenor: ${tenorYears}y (${termMonths}m)</span></div>
+    <div style="margin-top:8px;"><b>Upfront interest-only limit:</b> ${(typeLabel==="Industrial") ? "max 12 months (1 year)" : "max 24 months (2 years)"}</div>
+  `;
+
+  if (criteriaApplies && upfront>maxUpfront){
+    out += `<div style="margin-top:6px; color:#8a5a00;"><b>Note:</b> Upfront input (${upfront}m) exceeds limit; it will be capped to ${maxUpfront}m when generating.</div>`;
+  } else {
+    out += `<div style="margin-top:6px;">Your upfront input: <b>${upfront} months</b>${criteriaApplies ? " (within limit)." : "."}</div>`;
+  }
+
+  out += `<div style="margin-top:10px;"><b>Required principal paydown:</b> 3% of original principal per year, spread across 12 instalments after upfront.</div>`;
+  out += (reqPrinMonthly!=null)
+    ? `<div style="margin-top:6px;"><b>Minimum principal per month:</b> ${fmtMoney(reqPrinMonthly)}</div>`
+    : `<div style="margin-top:6px; color:#5f6368;">Enter Loan Amount to compute minimum principal per month.</div>`;
+
+  // Year-end table with actuals if schedule exists
+  if (applyCriteria && isFinite(P0) && P0>0){
+    const targets = buildTargets(P0, tenorYears, Math.min(upfront, maxUpfront));
+    const rows=[];
+    const sched=window.__lastSchedule;
+    const hasSched=!!(sched && sched.balancesByMonth &&
+      Math.abs((sched.loanAmount||0)-P0)<0.01 &&
+      (sched.propType||"")===propType &&
+      (sched.tenorYears||0)===tenorYears &&
+      (sched.upfrontMonths||0)===Math.min(upfront, maxUpfront)
+    );
+
+    let anyFail=false;
+    window.__yearEndFail = false;
+    for (const k of Object.keys(targets)){
+      const m=parseInt(k,10);
+      const year=m/12;
+      const tgt=targets[k];
+      let actualText="Generate schedule to see";
+      let status="—";
+      let statusStyle="color:#5f6368;";
+      if (hasSched){
+        const act=sched.balancesByMonth[m];
+        actualText = (act==null) ? "—" : fmtMoney(act);
+        if (act!=null && act<=tgt+0.01){ status="PASS"; statusStyle="color:#047857;font-weight:900;"; }
+        else if (act!=null){ status="FAIL"; statusStyle="color:#8a1f1f;font-weight:900;"; anyFail=true; window.__yearEndFail = true; }
+      }
+      rows.push(`<tr>
+        <td style="text-align:left; padding:6px 8px; border:1px solid #e6e8eb;">End of Year ${year}</td>
+        <td style="text-align:right; padding:6px 8px; border:1px solid #e6e8eb;"><b>${fmtMoney(tgt)}</b> or lower</td>
+        <td style="text-align:right; padding:6px 8px; border:1px solid #e6e8eb;">${actualText}</td>
+        <td style="text-align:center; padding:6px 8px; border:1px solid #e6e8eb; ${statusStyle}">${status}</td>
+      </tr>`);
+    }
+
+    if (rows.length){
+      out += `<div style="margin-top:12px;"><b>Year-end check (Outstanding Principal)</b></div>
+        <div style="margin-top:6px; color:#5f6368; font-size:12px;">After you click <b>Generate Schedule</b>, this table shows Actual Outstanding at year-end and marks PASS/FAIL vs target.</div>
+        <table style="width:100%; border-collapse:collapse; margin-top:8px; font-size:12.5px;">
+          <thead>
+            <tr>
+              <th style="text-align:left; padding:6px 8px; background:#f0f4ff; border:1px solid #e6e8eb;">Checkpoint</th>
+              <th style="text-align:right; padding:6px 8px; background:#f0f4ff; border:1px solid #e6e8eb;">Target Outstanding</th>
+              <th style="text-align:right; padding:6px 8px; background:#f0f4ff; border:1px solid #e6e8eb;">Actual Outstanding</th>
+              <th style="text-align:center; padding:6px 8px; background:#f0f4ff; border:1px solid #e6e8eb;">Status</th>
+            </tr>
+          </thead>
+          <tbody>${rows.join("")}</tbody>
+        </table>`;
+    }
+
+    // Counter proposal shown only when criteriaApplies and we have a schedule and FAIL
+    if (criteriaApplies && hasSched && anyFail){
+      const disb=parseDDMMYYYY(document.getElementById("scDisb").value);
+      const ratePct=parseFloat(document.getElementById("scRate").value);
+      if (disb && isFinite(ratePct) && ratePct>=0){
+        const suggested=findSuggestedInstalment(P0, ratePct, disb, tenorYears, Math.min(upfront,maxUpfront), targets, sched.instalment);
+        if (suggested!=null){
+          out += `<div style="margin-top:12px; padding:12px 12px; border:1px solid #f3d19e; background:#fff7ed; color:#8a5a00; border-radius:10px;">
+            <b>Counter-proposal:</b> To PASS year-end checks, instalment should be at least <b>${fmtMoney(suggested)}</b> per month (after upfront period).
+            <div style="margin-top:8px;">
+              <button type="button" class="secondary" onclick="document.getElementById('scInstal').value='${suggested}'; generateSchedule();">Use Suggested Instalment</button>
+            </div>
+          </div>`;
+        }
+      }
+    }
+  }
+
+  box.innerHTML=out;
+}
+
+// ---------- Schedule generation ----------
+function resetSchedule(){
+  try{ const sb=document.getElementById("statusBar"); if(sb) sb.textContent="Reset"; }catch(e){}
+  document.getElementById("scLoan").value="";
+  document.getElementById("scRate").value="";
+  document.getElementById("scDisb").value="";
+  document.getElementById("scPropType").value="industrial";
+  document.getElementById("scTenorYears").value="5";
+  document.getElementById("scUpfront").value="0";
+  document.getElementById("scInstal").value="";
+  const cb=document.getElementById("scFullInterest"); if(cb) cb.checked=false;
+  document.getElementById("scInstal").disabled=false;
+  document.getElementById("scCriteria").checked=true;
+  document.getElementById("scResult").innerHTML="";
+  const s=document.getElementById("scSummary");
+  s.style.display="none"; s.innerHTML="";
+  clearBox("scError"); clearBox("scWarn");
+  if(!document.getElementById("scResult")) throw new Error("Missing element #scResult");
+  window.__lastSchedule=null;
+  updateCriteriaInfo();
+}
+
+function generateSchedule(){
+  try{
+    try{ const sb=document.getElementById("statusBar"); if(sb) sb.textContent="Generate Schedule clicked"; }catch(e){}
+    clearBox("scError"); clearBox("scWarn");
+  if(!document.getElementById("scResult")) throw new Error("Missing element #scResult");
+  
+    const P0=parseFloat(document.getElementById("scLoan").value);
+    const ratePct=parseFloat(document.getElementById("scRate").value);
+    const disbStr=document.getElementById("scDisb").value;
+  
+    const propType=document.getElementById("scPropType").value;
+    let tenorYears=parseInt(document.getElementById("scTenorYears").value,10);
+    if (!Number.isInteger(tenorYears) || tenorYears<1) tenorYears=1;
+    if (tenorYears>5) tenorYears=5;
+  
+    let months = tenorYears * 12;
+    let upfront=parseInt(document.getElementById("scUpfront").value,10);
+    const instal=parseFloat(document.getElementById("scInstal").value);
+  
+    const applyCriteria=document.getElementById("scCriteria").checked;
+  
+    if (!isFinite(P0) || P0<=0) return showBox("scError","Please enter a valid Loan Amount.");
+    if (!isFinite(ratePct) || ratePct<0) return showBox("scError","Please enter a valid Interest Rate.");
+    if (!disbStr) return showBox("scError","Please enter a Disbursement Date (DD-MM-YYYY).");
+  
+    months = Math.min(60, months);
+  
+    if (!Number.isInteger(upfront) || upfront<0) upfront=0;
+  
+    const disb=parseDDMMYYYY(disbStr);
+    if (!disb) return showBox("scError","Invalid Disbursement Date. Please use DD-MM-YYYY (e.g., 30-04-2025).");
+  
+    const termMonths=tenorYears*12;
+    if (months>termMonths) months=termMonths;
+  
+    const maxUpfront=(propType==="industrial") ? 12 : 24;
+    const criteriaApplies = applyCriteria && (tenorYears>3) && (upfront>0);
+  
+    if (criteriaApplies && upfront>maxUpfront){
+      showBox("scWarn", `⚠️ Upfront interest-only exceeds credit criteria for ${propType}. Capped to ${maxUpfront} months.`);
+      upfront=maxUpfront;
+    }
+    if (upfront>months) upfront=months;
+
+    const fullInterestMode = document.getElementById("scFullInterest") ? document.getElementById("scFullInterest").checked : false;
+    if (fullInterestMode) {
+      // Entire schedule is interest-only; instalment input not required.
+      upfront = months;
+    } else {
+      if (!isFinite(instal) || instal<=0) return showBox("scError","Please enter an Instalment Amount (or use the Finder).");
+    }
+    const annual=ratePct/100;
+    let balance=round2(P0);
+    let prevDue=new Date(disb.getTime());
+    const msPerDay=24*60*60*1000;
+  
+    let totalInterest=0, totalPrincipal=0, totalPayment=0;
+    let insufficient=false;const balancesByMonth={};
+  
+    let rowsHtml="";
+  
+    for (let i=1;i<=months;i++){
+      const due=adjustToBusinessDaySameMonth(addMonths(disb,i));
+      const interestFrom=new Date(prevDue.getTime());
+      const interestTo=addDays(due,-1);
+      const days=Math.round((interestTo-interestFrom)/msPerDay)+1;
+  
+      const interest=round2(balance*annual*days/365);
+  
+      let principal=0;
+      let pay=0;
+      let newBal=balance;
+  
+      const negThisRow = (!fullInterestMode) && (i>upfront) && (round2(instal)-interest < 0);
+  
+      if (i<=upfront){
+        pay=interest; principal=0; newBal=balance;
+      } else {
+        pay=round2(instal);
+        principal=round2(pay-interest);
+  
+        if (principal<0){
+          insufficient=true;
+          principal=0;
+        }if (i===months){
+          principal=balance;
+          pay=round2(interest+principal);
+        }
+  
+        if (principal>balance){
+          principal=balance;
+          pay=round2(interest+principal);
+        }
+  
+        newBal=round2(balance-principal);
+      }
+  
+      totalInterest=round2(totalInterest+interest);
+      totalPrincipal=round2(totalPrincipal+principal);
+      totalPayment=round2(totalPayment+pay);
+  
+      balancesByMonth[i]=Math.max(0,newBal);
+  
+      rowsHtml += `
+        <tr class="${negThisRow ? "negRow" : ""}">
+          <td>${i}</td>
+          <td>${formatDDMMYYYY(due)}</td>
+          <td>${formatDDMMYYYY(interestFrom)}</td>
+          <td>${formatDDMMYYYY(interestTo)}</td>
+          <td>${days}</td>
+          <td>${fmtMoney(interest)}</td>
+          <td>${fmtMoney(principal)}</td>
+          <td>${fmtMoney(pay)}</td>
+          <td>${fmtMoney(newBal)}</td>
+        </tr>
+      `;
+  
+      balance=newBal;
+      prevDue=due;
+    }
+  
+    const table = `
+      <table>
+        <thead>
+          <tr>
+            <th>S/N</th>
+            <th>Due Date</th>
+            <th>Interest From</th>
+            <th>Interest To</th>
+            <th># days</th>
+            <th>Interest</th>
+            <th>Principal</th>
+            <th>Instalment</th>
+            <th>Outstanding Principal</th>
+          </tr>
+        </thead>
+        <tbody>${rowsHtml}</tbody>
+        <tfoot>
+          <tr>
+            <td colspan="5">Totals</td>
+            <td>${fmtMoney(totalInterest)}</td>
+            <td>${fmtMoney(totalPrincipal)}</td>
+            <td>${fmtMoney(totalPayment)}</td>
+            <td>${fmtMoney(Math.max(0,balance))}</td>
+          </tr>
+        </tfoot>
+      </table>
+    `;
+  
+    document.getElementById("scResult").innerHTML = table;
+  
+    window.__lastSchedule = {
+      loanAmount: P0,
+      ratePct: ratePct,
+      propType: propType,
+      tenorYears: tenorYears,
+      monthsShown: months,
+      upfrontMonths: upfront,
+      instalment: (fullInterestMode ? null : instal),
+      balancesByMonth: balancesByMonth
+    };
+  
+    updateCriteriaInfo();
+  
+    if (!fullInterestMode && insufficient){
+      showBox("scWarn", "⚠️ The proposed instalment amount is insufficient in at least one period (instalment < interest). Please increase the instalment amount.");
+    }const sum=document.getElementById("scSummary");
+    sum.style.display="grid";
+    sum.innerHTML = `
+      <div class="pill"><div class="k">Upfront Months</div><div class="v">${upfront.toLocaleString()}</div></div>
+      <div class="pill"><div class="k">Instalment</div><div class="v">${fullInterestMode ? "Interest-only" : fmtMoney(Math.round(instal))}</div></div>
+      <div class="pill"><div class="k">Total Interest</div><div class="v">${fmtMoney(totalInterest)}</div></div>
+      <div class="pill"><div class="k">Ending Balance</div><div class="v">${fmtMoney(Math.max(0,balance))}</div></div>
+    `;
+  } catch (e) {
+    try{
+      const msg = (e && e.stack) ? (String(e.message || e) + "<br><pre style=\"white-space:pre-wrap; margin:8px 0 0 0;\">" + String(e.stack) + "</pre>") : String(e);
+      showBox("scError", "❌ JavaScript error while generating schedule:<br>" + msg);
+      const sb=document.getElementById("statusBar"); if(sb) sb.textContent="Error (see red box)";
+    } catch (e2) {
+      alert("Error generating schedule: " + (e2.message || e2));
+    }
+  }
+}
+
+
+// ---------- Wire up buttons safely ----------
+window.computeInstalment = computeInstalment;
+window.useInstalment = useInstalment;
+window.generateSchedule = generateSchedule;
+window.resetSchedule = resetSchedule;
+
+document.addEventListener("DOMContentLoaded", () => {
+  const btnC=document.getElementById("btnComputeInstal");
+  const btnU=document.getElementById("btnUseInstal");
+  const btnG=document.getElementById("btnGenSchedule");
+  const btnR=document.getElementById("btnResetSchedule");
+
+  if (btnC) btnC.addEventListener("click", computeInstalment);
+  if (btnU) btnU.addEventListener("click", useInstalment);
+  if (btnG) btnG.addEventListener("click", generateSchedule);
+  if (btnR) btnR.addEventListener("click", resetSchedule);
+
+  const fullCb = document.getElementById("scFullInterest");
+  const instEl = document.getElementById("scInstal");
+  function applyFullInterestUI(){
+    const on = fullCb && fullCb.checked;
+    if (instEl){
+      instEl.disabled = !!on;
+      if (on) instEl.value = "";
+    }
+    updateCriteriaInfo();
+  }
+  if (fullCb){
+    fullCb.addEventListener("change", applyFullInterestUI);
+    fullCb.addEventListener("input", applyFullInterestUI);
+  }
+
+  // Live update criteria box as user edits fields
+  ["scLoan","scRate","scDisb","scPropType","scTenorYears","scUpfront","scCriteria","scFullInterest"].forEach(id=>{
+    const el=document.getElementById(id);
+    if (!el) return;
+    el.addEventListener("input", updateCriteriaInfo);
+    el.addEventListener("change", updateCriteriaInfo);
+  });
+
+  updateCriteriaInfo();
+});
+</script>
+</body>
+</html>
