@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Valuation & Loan Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    :root {
+      ---navy: #001b3f;
+      ---navy-dark: #000f24;
+      ---teal: #00a5a5;
+      ---accent: #ff7a1a;
+      ---light-bg: #f5f7fb;
+      ---card-border: #dde3f0;
+      ---text-main: #1f2933;
+      ---text-muted: #6b778c;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      background: #ffffff;
+      color: var(---text-main);
+    }
+
+    .top-bar {
+      background: #ffffff;
+      border-bottom: 1px solid #e2e6f0;
+      color: var(---navy-dark);
+      padding: 10px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand-logo { height: 32px; display: flex; align-items: center; }
+    .brand-logo img { height: 32px; display: block; }
+
+    .brand-text-main {
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      font-size: 13px;
+      color: var(---navy-dark);
+    }
+    .brand-text-sub {
+      font-size: 11px;
+      opacity: 0.75;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(---text-muted);
+    }
+
+    .top-bar-right {
+      font-size: 11px;
+      text-align: right;
+      color: var(---text-muted);
+    }
+    .top-bar-right strong { color: var(---navy-dark); }
+
+    .page {
+      max-width: 1120px;
+      margin: 24px auto 40px;
+      padding: 0 16px;
+    }
+
+    .hero {
+      background: linear-gradient(120deg, rgba(0, 27, 63, 0.08), rgba(0, 165, 165, 0.08));
+      border-radius: 18px;
+      padding: 18px 20px 20px;
+      border: 1px solid rgba(222, 230, 247, 0.9);
+      display: grid;
+      grid-template-columns: minmax(0, 2.5fr) minmax(0, 1.8fr);
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+    @media (max-width: 800px) {
+      .hero { grid-template-columns: 1fr; }
+    }
+
+    .hero-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(---navy-dark);
+      margin-bottom: 4px;
+    }
+    .hero-subtitle {
+      font-size: 14px;
+      color: var(---text-muted);
+      margin-bottom: 10px;
+    }
+    .hero-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+    .tag {
+      font-size: 11px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: #e6f7f8;
+      color: #036972;
+      border: 1px solid #b9ecef;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .hero-note {
+      font-size: 11px;
+      color: var(---text-muted);
+      margin-top: 4px;
+      max-width: 420px;
+    }
+
+    .hero-highlight {
+      background: #001b3f;
+      border-radius: 14px;
+      padding: 10px 14px;
+      color: #e8f4ff;
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .hero-highlight-title { font-weight: 600; font-size: 13px; }
+    .hero-highlight-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+    }
+    .hero-highlight-chip {
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(0, 165, 165, 0.1);
+      border: 1px solid rgba(0, 165, 165, 0.6);
+      font-size: 11px;
+      color: #b7f4ff;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.05fr);
+      gap: 18px;
+      align-items: flex-start;
+    }
+    @media (max-width: 980px) { .layout { grid-template-columns: 1fr; } }
+
+    .section {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 14px 16px 16px;
+      border: 1px solid var(---card-border);
+      box-shadow: 0 10px 26px rgba(15, 35, 70, 0.06);
+      margin-bottom: 12px;
+    }
+
+    .section-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(---navy-dark);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .section-subtitle {
+      font-size: 11px;
+      color: var(---text-muted);
+    }
+
+    .pill {
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: #ecf3ff;
+      color: #264478;
+      border: 1px solid #c9d5f5;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 160px minmax(0, 1fr);
+      gap: 6px 12px;
+      align-items: center;
+    }
+    @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+
+    label { font-size: 12px; color: var(---text-main); }
+    .field-hint {
+      font-size: 10px;
+      color: var(---text-muted);
+      margin-top: 2px;
+    }
+    .info-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 14px;
+      height: 14px;
+      margin-left: 4px;
+      border-radius: 50%;
+      border: 1px solid #9ba4c5;
+      font-size: 9px;
+      font-weight: 600;
+      color: #4b5793;
+      cursor: help;
+      background: #f5f7ff;
+    }
+
+
+    input[type="text"],
+    input[type="number"] {
+      width: 100%;
+      padding: 7px 9px;
+      border-radius: 8px;
+      border: 1px solid #cbd2e8;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+      background: #fbfcff;
+    }
+    input[type="text"]:focus,
+    input[type="number"]:focus {
+      border-color: var(---teal);
+      box-shadow: 0 0 0 1px rgba(0, 165, 165, 0.35);
+      background: #ffffff;
+    }
+    input[type="radio"] { accent-color: var(---teal); }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    button {
+      padding: 8px 16px;
+      cursor: pointer;
+      border-radius: 999px;
+      border: none;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(---teal), #02c3b3);
+      color: #003241;
+      box-shadow: 0 10px 20px rgba(0, 165, 165, 0.3);
+    }
+    .btn-primary:hover {
+      filter: brightness(1.03);
+      transform: translateY(-0.5px);
+      box-shadow: 0 12px 22px rgba(0, 165, 165, 0.4);
+    }
+    .btn-secondary {
+      background: #ffffff;
+      color: var(---navy-dark);
+      border: 1px solid #cbd2e8;
+    }
+    .btn-secondary:hover { background: #f5f7fb; }
+    .btn-outline {
+      background: #ffffff;
+      color: var(---accent);
+      border: 1px solid rgba(255, 122, 26, 0.6);
+    }
+    .btn-outline:hover { background: rgba(255, 122, 26, 0.05); }
+
+    .result-box {
+      margin-top: 8px;
+      padding: 10px;
+      background: var(---light-bg);
+      border-radius: 12px;
+      border: 1px dashed #c4cde6;
+      font-size: 12px;
+    }
+
+    .choices-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(---text-muted);
+      margin-bottom: 6px;
+    }
+
+    .valuation-options {
+      display: grid;
+      gap: 6px;
+    }
+    .valuation-option {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+    }
+    .valuation-badge {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: #edf2ff;
+      color: #283b7b;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .error { color: #c13333; margin-top: 6px; font-size: 11px; }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 8px;
+      font-size: 12px;
+    }
+    table th,
+    table td {
+      border: 1px solid #d6ddef;
+      padding: 7px 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+    table th {
+      background: #f3f5ff;
+      color: #22345c;
+      font-weight: 600;
+    }
+    table tr:nth-child(even) td { background: #fbfcff; }
+
+    table td.amount-cell {
+      white-space: nowrap;
+      text-align: right;
+    }
+
+    .muted { font-size: 11px; color: var(---text-muted); }
+
+    .footer-note {
+      margin-top: 10px;
+      font-size: 10px;
+      color: var(---text-muted);
+      line-height: 1.4;
+    }
+    .footer-note strong { color: var(---navy-dark); }
+
+    .disclaimer-bar {
+      margin-top: 24px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: #fff7ec;
+      border: 1px solid #ffe0b8;
+      font-size: 10px;
+      color: #8a5200;
+    }
+    .disclaimer-bar strong {
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 10px;
+    }
+
+    /* History styling */
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .history-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(---navy-dark);
+    }
+    .history-subtitle {
+      font-size: 11px;
+      color: var(---text-muted);
+    }
+    .history-table-wrapper {
+      max-height: 260px;
+      overflow: auto;
+      margin-top: 4px;
+      border-radius: 8px;
+      border: 1px solid #e0e4f3;
+      background: #fff;
+    }
+    .history-table {
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 11px;
+    }
+    .history-table th,
+    .history-table td {
+      border-bottom: 1px solid #edf0fa;
+      padding: 5px 6px;
+      text-align: left;
+      white-space: nowrap;
+    }
+    .history-table th {
+      position: sticky;
+      top: 0;
+      background: #f3f5ff;
+      z-index: 1;
+      font-weight: 600;
+      color: #22345c;
+    }
+    .history-amount {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    @media print {
+      body { background: #ffffff !important; }
+      .top-bar { display: none !important; }
+      .button-row { display: none !important; }
+      .disclaimer-bar { border: none; background: none; }
+    }
+  
+
+/* ===============================
+   Unified UI Theme (override)
+   Market-practice: tokenized design system + accessible contrast
+   =============================== */
+:root{
+  --ui-font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+  --ui-bg: #f6f7fb;
+  --ui-surface: #ffffff;
+  --ui-surface-2: #f9fafb;
+  --ui-text: #0f172a;
+  --ui-muted: #475569;
+  --ui-border: #e2e8f0;
+
+  --ui-primary: #1d4ed8;      /* blue-700 */
+  --ui-primary-600: #2563eb;  /* blue-600 */
+  --ui-primary-800: #1e40af;  /* blue-800 */
+  --ui-success: #059669;      /* emerald-600 */
+  --ui-danger: #b91c1c;       /* red-700 */
+  --ui-warn: #b45309;         /* amber-700 */
+
+  --ui-radius: 14px;
+  --ui-radius-sm: 10px;
+  --ui-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+  --ui-shadow-sm: 0 6px 18px rgba(15, 23, 42, 0.08);
+}
+
+*{ font-family: var(--ui-font) !important; }
+
+body{
+  background: var(--ui-bg) !important;
+  color: var(--ui-text) !important;
+}
+
+h1,h2,h3{
+  color: var(--ui-text) !important;
+  letter-spacing: -0.01em;
+}
+
+.subtitle,.sub,.note,.footer-note,.muted,.section-subtitle,.hero-subtitle,.brand-text-sub,.top-bar-right{
+  color: var(--ui-muted) !important;
+}
+
+/* Cards / sections */
+.card,.section{
+  border-radius: var(--ui-radius) !important;
+  box-shadow: var(--ui-shadow) !important;
+  border: 1px solid var(--ui-border) !important;
+  background: var(--ui-surface) !important;
+}
+
+.result-item,.pill,.result-box,#criteriaInfo{
+  border-radius: var(--ui-radius-sm) !important;
+  border-color: var(--ui-border) !important;
+}
+
+input,select,textarea,
+input[type="text"],input[type="number"]{
+  border-radius: 10px !important;
+  border: 1px solid var(--ui-border) !important;
+  background: #fff !important;
+  color: var(--ui-text) !important;
+}
+
+input:focus,select:focus,textarea:focus{
+  border-color: var(--ui-primary-600) !important;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.16) !important;
+  outline: none !important;
+}
+
+/* Buttons */
+button,
+.btn-primary,.btn-print,
+.btn-secondary,.btn-outline,
+button.secondary{
+  border-radius: 999px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.01em;
+}
+
+button:not(.secondary):not(.btn-secondary):not(.btn-outline),
+.btn-primary{
+  background: var(--ui-primary-600) !important;
+  color: #fff !important;
+  box-shadow: 0 10px 22px rgba(37, 99, 235, 0.22) !important;
+}
+
+.btn-primary:hover, button:not(.secondary):not(.btn-secondary):not(.btn-outline):hover{
+  background: var(--ui-primary) !important;
+}
+
+.btn-print{
+  background: var(--ui-success) !important;
+  box-shadow: 0 10px 22px rgba(5, 150, 105, 0.20) !important;
+}
+.btn-print:hover{ background: #047857 !important; }
+
+button.secondary, .btn-secondary{
+  background: #ffffff !important;
+  color: var(--ui-primary-800) !important;
+  border: 1px solid var(--ui-border) !important;
+  box-shadow: none !important;
+}
+
+.btn-outline{
+  background: #ffffff !important;
+  color: var(--ui-primary-800) !important;
+  border: 1px solid rgba(37, 99, 235, 0.45) !important;
+}
+
+/* Tables */
+table{ border-color: var(--ui-border) !important; }
+th{
+  background: rgba(37, 99, 235, 0.08) !important;
+  color: var(--ui-primary-800) !important;
+}
+.breakdown-table th{ background: rgba(37, 99, 235, 0.08) !important; }
+
+/* Notices */
+.error{ border-color: rgba(185, 28, 28, 0.25) !important; color: var(--ui-danger) !important; }
+.warn{ border-color: rgba(180, 83, 9, 0.25) !important; color: var(--ui-warn) !important; }
+
+/* Top bar (if present) */
+.top-bar{
+  background: var(--ui-surface) !important;
+  border-bottom: 1px solid var(--ui-border) !important;
+}
+
+/* Print */
+@media print{
+  body{ background:#fff !important; }
+  .card,.section{ box-shadow:none !important; }
+}
+/* Shared history toast */
+.toast{
+  position: fixed;
+  right: 14px;
+  bottom: 14px;
+  background: rgba(15, 23, 42, 0.92);
+  color: #fff;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  box-shadow: 0 10px 28px rgba(0,0,0,0.18);
+  display: none;
+  max-width: min(520px, calc(100vw - 28px));
+  z-index: 9999;
+}
+.toast.show{ display:block; }
+.toast small{ display:block; opacity:0.85; margin-top:2px; }
+</style>
+</head>
+<body>
+
+  <header class="top-bar">
+    <div class="brand">
+      <div class="brand-logo">
+        
+      </div>
+      <div>
+        <div class="brand-text-main"></div>
+        <div class="brand-text-sub">Valuation &amp; loan sizing tool</div>
+      </div>
+    </div>
+    <div class="top-bar-right">
+      <div><strong>Internal working tool</strong></div>
+      <div>For discussion &amp; illustration only</div>
+    </div>
+  </header>
+
+  <main class="page">
+
+    <!-- Borrower info -->
+    <section class="section">
+      <div class="section-title">Borrower Information</div>
+      <div class="grid">
+        <div>
+  <label for="userName">User Name</label>
+  <div class="field-hint">For shared history logging</div>
+</div>
+<input id="userName" type="text" placeholder="E.g. William Chia">
+
+<div>
+  <label for="dealName">Deal Name</label>
+  <div class="field-hint">Optional. E.g. ABC Pte Ltd – 123 ABC Road</div>
+</div>
+<input id="dealName" type="text" placeholder="Enter deal name (optional)">
+
+<div>
+  <label for="industry">Industry</label>
+  <div class="field-hint">Optional</div>
+</div>
+<input id="industry" type="text" placeholder="E.g. Trading / F&B / Manufacturing">
+
+<div>
+  <label for="country">Country</label>
+  <div class="field-hint">Optional</div>
+</div>
+<input id="country" type="text" placeholder="E.g. Singapore">
+
+<div>
+  <label for="currency">Currency</label>
+  <div class="field-hint">Default SGD</div>
+</div>
+<input id="currency" type="text" placeholder="SGD">
+<div>
+          <label for="borrowerName">Borrower Name</label>
+          <div class="field-hint">E.g. ABC Pte Ltd</div>
+        </div>
+        <input id="borrowerName" type="text" placeholder="Enter borrower name">
+
+        <div>
+          <label for="propertyAddress">Property Address</label>
+          <div class="field-hint">E.g. 123 ABC Road #01-01 Singapore 123456</div>
+        </div>
+        <input id="propertyAddress" type="text" placeholder="Enter property address">
+
+        <div>
+          <label for="referralSource">Source of Referral</label>
+          <div class="field-hint">E.g. Broker / Direct / Partner</div>
+        </div>
+        <input id="referralSource" type="text" placeholder="E.g. Broker Name / Direct / Partner">
+      </div>
+    </section>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div>
+        <h1 class="hero-title">Property Valuation &amp; Loan Sizing</h1>
+        <p class="hero-subtitle">
+          Align Tier 1 &amp; Tier 2 valuations with CPF usage and existing loan to derive
+          indicative <strong>requested amount</strong> and <strong>gear up</strong> for ABL cases.
+        </p>
+        <div class="hero-tags">
+          <span class="tag">Asset-Based Lending</span>
+          <span class="tag">Property LTV</span>
+          <span class="tag">Internal Use</span>
+        </div>
+        <p class="hero-note">
+          The tool takes the top 2 valuations from each valuer tier, then derives
+          <strong>Average</strong>, <strong>2nd Lowest</strong> and <strong>Lowest</strong>
+          across the 4 values. All S$ figures are formatted with commas (e.g. 1,500,000).
+        </p>
+      </div>
+      <div class="hero-highlight">
+        <div class="hero-highlight-title">Quick formula recap</div>
+        <div class="hero-highlight-row">
+          <span>Max loan by LTV</span>
+          <span class="hero-highlight-chip">Valuation × LTV%</span>
+        </div>
+        <div class="hero-highlight-row">
+          <span>Requested amount</span>
+          <span class="hero-highlight-chip">(Valuation × LTV%) − CPF</span>
+        </div>
+        <div class="hero-highlight-row">
+          <span>Gear up</span>
+          <span class="hero-highlight-chip">Requested − Outstanding</span>
+        </div>
+        <div class="hero-note">
+          For indicative calculations only. Final quantum remains subject to credit approval and internal policies.
+        </div>
+      </div>
+    </section>
+
+    <!-- Main layout -->
+    <section class="layout">
+      <div>
+        <!-- Tier 1 -->
+        <div class="section">
+          <div class="section-title-row">
+            <div class="section-title">
+              Tier 1 Valuers
+              <span class="pill">Knight Frank · Colliers · JLL</span>
+            </div>
+          </div>
+          <div class="grid">
+            <div>
+              <label for="knightFrank">Knight Frank (S$)</label>
+              <div class="field-hint">e.g. 1,500,000</div>
+            </div>
+            <input id="knightFrank" class="money-input" type="text" placeholder="1,500,000">
+
+            <div>
+              <label for="colliers">Colliers (S$)</label>
+              <div class="field-hint">e.g. 1,480,000</div>
+            </div>
+            <input id="colliers" class="money-input" type="text" placeholder="1,480,000">
+
+            <div>
+              <label for="jll">JLL (S$)</label>
+              <div class="field-hint">e.g. 1,450,000</div>
+            </div>
+            <input id="jll" class="money-input" type="text" placeholder="1,450,000">
+          </div>
+        </div>
+
+        <!-- Tier 2 -->
+        <div class="section">
+          <div class="section-title-row">
+            <div class="section-title">
+              Tier 2 Valuers
+              <span class="pill">CKS · Teho · Edmund Tie · Premas</span>
+            </div>
+          </div>
+          <div class="grid">
+            <div>
+              <label for="cks">CKS (S$)</label>
+              <div class="field-hint">e.g. 1,430,000</div>
+            </div>
+            <input id="cks" class="money-input" type="text" placeholder="1,430,000">
+
+            <div>
+              <label for="teho">Teho (S$)</label>
+              <div class="field-hint">e.g. 1,420,000</div>
+            </div>
+            <input id="teho" class="money-input" type="text" placeholder="1,420,000">
+
+            <div>
+              <label for="edmundTie">Edmund Tie (S$)</label>
+              <div class="field-hint">e.g. 1,460,000</div>
+            </div>
+            <input id="edmundTie" class="money-input" type="text" placeholder="1,460,000">
+
+            <div>
+              <label for="premas">Premas (S$)</label>
+              <div class="field-hint">e.g. 1,400,000</div>
+            </div>
+            <input id="premas" class="money-input" type="text" placeholder="1,400,000">
+          </div>
+        </div>
+
+        <!-- Loan parameters & buttons -->
+        <div class="section">
+          <div class="section-title-row">
+            <div class="section-title">
+              Loan Parameters
+              <span class="pill">LTV · CPF · Existing Loan</span>
+            </div>
+          </div>
+
+          <div class="grid">
+            <div>
+              <label for="ltv">LTV (%)</label>
+              <div class="field-hint">e.g. 75</div>
+            </div>
+            <input id="ltv" type="number" min="0" max="100" step="0.01" placeholder="75">
+
+            <div>
+              <label for="cpfUsage">CPF Usage (S$)</label>
+              <div class="field-hint">e.g. 100,000</div>
+            </div>
+            <input id="cpfUsage" class="money-input" type="text" placeholder="100,000">
+
+            <div>
+              <label for="cpfMonthYear">Month &amp; Year of CPF Amount <span class="info-icon" title="CPF amount will be projected to end of loan tenor at 2.5% p.a., using months from the statement date to today, plus a 2-month disbursement buffer and the full loan tenor years.">i</span></label>
+              <div class="field-hint">MM/YYYY, e.g. 09/2025</div>
+            </div>
+            <input id="cpfMonthYear" type="text" placeholder="MM/YYYY">
+
+            <div>
+              <label for="loanTenorYears">Loan Tenor (years)</label>
+              <div class="field-hint">Max 5 years</div>
+            </div>
+            <input id="loanTenorYears" type="number" min="0" max="5" step="1" placeholder="2">
+
+            <div>
+              <label for="outstandingLoan">Outstanding Loan (S$)</label>
+              <div class="field-hint">e.g. 100,000</div>
+            </div>
+            <input id="outstandingLoan" class="money-input" type="text" placeholder="100,000">
+          </div>
+</div>
+
+          <div class="button-row">
+            <button id="calculateBtn" class="btn-primary" type="button">
+              <span>Run Calculation</span>
+            </button>
+            <button id="resetBtn" class="btn-secondary" type="button">
+              <span>Reset</span>
+            </button>
+            <button id="exportBtn" class="btn-outline" type="button">
+              <span>Export to PDF</span>
+            </button>
+          </div>
+
+          <div id="error" class="error"></div>
+        </div>
+      </div>
+
+      <div>
+        <!-- Valuation choices -->
+        <div class="section">
+          <div class="section-title-row">
+            <div class="section-title">Step 1 · Choose Valuation</div>
+            <div class="section-subtitle">Based on top 2 from each tier (4 values total)</div>
+          </div>
+          <div class="result-box">
+            <div class="choices-label">Valuation basis</div>
+            <div id="valuationChoices" class="muted">
+              Run the calculation to derive Average / 2nd Lowest / Lowest from the 4 selected valuations.
+            </div>
+          </div>
+        </div>
+
+        <!-- Loan summary -->
+        <div class="section">
+          <div class="section-title-row">
+            <div class="section-title">Step 2 · Loan &amp; Gear-up Summary</div>
+          </div>
+          <div id="loanResult" class="result-box muted">
+            Enter valuer figures and click <strong>Run Calculation</strong> to view details here.
+          </div>
+          <div class="footer-note">
+            <strong>Note:</strong> This is an internal estimation tool to support deal discussions.
+            Final facility structure, pricing and quantum are subject to full credit assessment,
+            risk appetite, collateral, documentation and prevailing internal / regulatory guidelines.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- History section -->
+    <section class="section">
+      <div class="history-header">
+        <div>
+          <div class="history-title">Calculation History (browser-only)</div>
+          <div class="history-subtitle">
+            All input fields and outputs are stored locally in this browser (localStorage). Clears if cache is wiped.
+          </div>
+        </div>
+        <button id="clearHistoryBtn" class="btn-secondary" type="button" style="font-size:10px;padding:6px 10px;">
+          Clear History
+        </button>
+      </div>
+      <div id="historyEmpty" class="muted">No calculations yet.</div>
+      <div id="historyWrapper" class="history-table-wrapper" style="display:none;">
+        <table class="history-table" id="historyTable">
+          <thead>
+            <tr>
+              <th>Date / Time</th>
+              <th>Borrower</th>
+              <th>Property</th>
+              <th>Referral</th>
+              <th>KF</th>
+              <th>Colliers</th>
+              <th>JLL</th>
+              <th>CKS</th>
+              <th>Teho</th>
+              <th>Edmund Tie</th>
+              <th>Premas</th>
+              <th>Valuation Basis</th>
+              <th>Valuation Used</th>
+              <th>LTV %</th>
+              <th>CPF Usage</th>
+              <th>Outstanding</th>
+              <th>Requested</th>
+              <th>Gear Up</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <div class="disclaimer-bar">
+      <strong>Disclaimer:</strong> This tool is for internal use by  staff only and is meant for
+      indicative illustrations. It does not constitute an offer, commitment, recommendation, or approval to
+      provide financing. All outputs are subject to verification against official valuations, credit policies,
+      legal documentation and management approval.
+    </div>
+
+  </main>
+
+  <script>
+    const calculateBtn = document.getElementById('calculateBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const exportBtn = document.getElementById('exportBtn');
+    const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+
+    const errorDiv = document.getElementById('error');
+    const valuationChoicesDiv = document.getElementById('valuationChoices');
+    const loanResultDiv = document.getElementById('loanResult');
+
+    const historyWrapper = document.getElementById('historyWrapper');
+    const historyEmpty = document.getElementById('historyEmpty');
+    const historyTableBody = document.querySelector('#historyTable tbody');
+
+    const HISTORY_KEY = 'LoanHistoryV3';
+
+// ===== Shared Google Sheet logging (Apps Script Web App) =====
+const SHARED_HISTORY_URL = "https://script.google.com/macros/s/AKfycbz97c_eO5RjOryTov5A6IYEkAH9LgN2T8hhwdkjWNeEzKtVd_HHndpp1gGdgK4lS148bw/exec";
+const SHARED_HISTORY_API_KEY = "IFS_TEAM2_2026_4mN9Qp7Vz2Xk8Hd5Lr3Tt6Yw1sA0cB9e";
+const TEAM_NAME = "IFS Capital - Team 2";
+const CALC_VERSION = "abl-valuation-v1";
+const SOURCE_NAME = "github-pages";
+
+function getOrCreateSessionId() {
+  const key = "ifs_tools_session_id";
+  let id = localStorage.getItem(key);
+  if (!id) {
+    id = "sess_" + Math.random().toString(16).slice(2) + "_" + Date.now().toString(16);
+    localStorage.setItem(key, id);
+  }
+  return id;
+}
+
+function showToast(msg, sub="") {
+  const el = document.getElementById("toast");
+  if (!el) return;
+  el.innerHTML = sub ? (msg + "<small>" + sub + "</small>") : msg;
+  el.classList.add("show");
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer = setTimeout(() => el.classList.remove("show"), 3200);
+}
+
+async function logToSharedHistory(payload) {
+  try {
+    const res = await fetch(SHARED_HISTORY_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!json || json.ok !== true) {
+      console.warn("Shared history log failed:", json);
+      showToast("Saved locally ✅", "Shared history not saved (check script access/key).");
+      return false;
+    }
+    showToast("Saved to shared history ✅", "Also stored locally in this browser.");
+    return true;
+  } catch (e) {
+    console.warn("Shared history log error:", e);
+    showToast("Saved locally ✅", "Shared history not saved (network/CORS).");
+    return false;
+  }
+}
+
+    let valuationOptions = { average: null, secondLowest: null, lowest: null };
+
+    function parseMoney(str) {
+      if (!str) return NaN;
+      const cleaned = String(str).replace(/,/g, '').trim();
+      if (cleaned === '') return NaN;
+      return parseFloat(cleaned);
+    }
+
+    function formatNumberWithCommas(num) {
+      if (isNaN(num)) return '';
+      return num.toLocaleString('en-SG', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+      });
+    }
+
+    function formatMoney(num) {
+      if (isNaN(num)) return '-';
+      return 'S$ ' + formatNumberWithCommas(num);
+    }
+
+    function attachMoneyFormatters() {
+      const moneyInputs = document.querySelectorAll('.money-input');
+      moneyInputs.forEach(input => {
+        input.addEventListener('blur', () => {
+          const num = parseMoney(input.value);
+          if (!isNaN(num)) {
+            input.value = formatNumberWithCommas(num);
+          } else {
+            input.value = '';
+          }
+        });
+      });
+    }
+
+    
+    function getInputs() {
+      const knightFrank = parseMoney(document.getElementById('knightFrank').value);
+      const colliers = parseMoney(document.getElementById('colliers').value);
+      const jll = parseMoney(document.getElementById('jll').value);
+
+      const cks = parseMoney(document.getElementById('cks').value);
+      const teho = parseMoney(document.getElementById('teho').value);
+      const edmundTie = parseMoney(document.getElementById('edmundTie').value);
+      const premas = parseMoney(document.getElementById('premas').value);
+
+      const ltv = parseFloat(document.getElementById('ltv').value);
+      const cpfUsage = parseMoney(document.getElementById('cpfUsage').value);
+      const cpfMonthYear = document.getElementById('cpfMonthYear').value.trim();
+      const loanTenorYears = parseFloat(document.getElementById('loanTenorYears').value);
+      const outstandingLoan = parseMoney(document.getElementById('outstandingLoan').value);
+
+      const borrowerName = document.getElementById('borrowerName').value.trim();
+      const userName = document.getElementById('userName') ? document.getElementById('userName').value.trim() : '';
+      const dealName = document.getElementById('dealName') ? document.getElementById('dealName').value.trim() : '';
+      const industry = document.getElementById('industry') ? document.getElementById('industry').value.trim() : '';
+      const country = document.getElementById('country') ? document.getElementById('country').value.trim() : '';
+      const currency = document.getElementById('currency') ? document.getElementById('currency').value.trim() : 'SGD';
+      const propertyAddress = document.getElementById('propertyAddress').value.trim();
+      const referralSource = document.getElementById('referralSource').value.trim();
+
+      return {
+        knightFrank, colliers, jll,
+        cks, teho, edmundTie, premas,
+        ltv, cpfUsage, cpfMonthYear, loanTenorYears, outstandingLoan,
+        borrowerName, propertyAddress, referralSource,
+        userName, dealName, industry, country, currency
+      };
+    }
+
+    function validateInputs(inputs) {
+      const numericVals = [
+        inputs.knightFrank, inputs.colliers, inputs.jll,
+        inputs.cks, inputs.teho, inputs.edmundTie, inputs.premas,
+        inputs.ltv, inputs.cpfUsage, inputs.loanTenorYears, inputs.outstandingLoan
+      ];
+      return numericVals.every(v => !isNaN(v));
+    }
+
+    function deriveValuationOptions(inputs) {
+      const tier1 = [inputs.knightFrank, inputs.colliers, inputs.jll]
+        .sort((a, b) => b - a)
+        .slice(0, 2);
+
+      const tier2 = [inputs.cks, inputs.teho, inputs.edmundTie, inputs.premas]
+        .sort((a, b) => b - a)
+        .slice(0, 2);
+
+      const combined = tier1.concat(tier2).sort((a, b) => a - b);
+
+      const lowest = combined[0];
+      const secondLowest = combined[1];
+      const average = combined.reduce((sum, v) => sum + v, 0) / combined.length;
+
+      valuationOptions = { average, secondLowest, lowest };
+    }
+
+    function renderValuationChoices() {
+      const { average, secondLowest, lowest } = valuationOptions;
+
+      const content = document.createElement('div');
+      content.className = 'valuation-options';
+
+      content.innerHTML = `
+        <label class="valuation-option">
+          <input type="radio" name="valuationChoice" value="average" checked>
+          <span class="valuation-badge">Average</span>
+          <span>Average of 4 values: <strong>${formatMoney(average)}</strong></span>
+        </label>
+        <label class="valuation-option">
+          <input type="radio" name="valuationChoice" value="secondLowest">
+          <span class="valuation-badge">2nd Lowest</span>
+          <span>2nd lowest of 4 values: <strong>${formatMoney(secondLowest)}</strong></span>
+        </label>
+        <label class="valuation-option">
+          <input type="radio" name="valuationChoice" value="lowest">
+          <span class="valuation-badge">Lowest</span>
+          <span>Lowest of 4 values: <strong>${formatMoney(lowest)}</strong></span>
+        </label>
+      `;
+
+      valuationChoicesDiv.innerHTML = '';
+      valuationChoicesDiv.classList.remove('muted');
+      valuationChoicesDiv.appendChild(content);
+
+      const radios = valuationChoicesDiv.querySelectorAll('input[name="valuationChoice"]');
+      radios.forEach(radio => {
+        radio.addEventListener('change', calculateLoanAndRender);
+      });
+    }
+
+    function getSelectedValuationType() {
+      const selected = document.querySelector('input[name="valuationChoice"]:checked');
+      if (!selected) return null;
+      return selected.value;
+    }
+
+    function getSelectedValuation() {
+      const type = getSelectedValuationType();
+      if (!type) return null;
+      return valuationOptions[type];
+    }
+
+    function saveToHistory(record) {
+      try {
+        const existing = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+        existing.unshift(record);
+        const trimmed = existing.slice(0, 200); // keep up to 200
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(trimmed));
+      } catch (e) {
+        console.warn('Unable to save history', e);
+      }
+      renderHistory();
+    }
+
+    function renderHistory() {
+      let data = [];
+      try {
+        data = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+      } catch (e) {
+        data = [];
+      }
+
+      if (!data.length) {
+        historyWrapper.style.display = 'none';
+        historyEmpty.style.display = 'block';
+        historyTableBody.innerHTML = '';
+        return;
+      }
+
+      historyWrapper.style.display = 'block';
+      historyEmpty.style.display = 'none';
+      historyTableBody.innerHTML = '';
+
+      data.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${item.date}</td>
+          <td>${item.borrowerName || ''}</td>
+          <td>${item.propertyAddress || ''}</td>
+          <td>${item.referralSource || ''}</td>
+          <td>${formatMoney(item.knightFrank)}</td>
+          <td>${formatMoney(item.colliers)}</td>
+          <td>${formatMoney(item.jll)}</td>
+          <td>${formatMoney(item.cks)}</td>
+          <td>${formatMoney(item.teho)}</td>
+          <td>${formatMoney(item.edmundTie)}</td>
+          <td>${formatMoney(item.premas)}</td>
+          <td>${item.valuationBasis}</td>
+          <td>${formatMoney(item.valuation)}</td>
+          <td class="history-amount">${item.ltv.toFixed(2)}%</td>
+          <td class="history-amount">${formatMoney(item.cpfUsage)}</td>
+          <td class="history-amount">${formatMoney(item.outstandingLoan)}</td>
+          <td class="history-amount">${formatMoney(item.requestedLoan)}</td>
+          <td class="history-amount">${formatMoney(item.gearUp)}</td>
+        `;
+        historyTableBody.appendChild(tr);
+      });
+    }
+
+    function clearHistory() {
+      localStorage.removeItem(HISTORY_KEY);
+      renderHistory();
+    }
+
+    
+function calculateLoanAndRender() {
+      const inputs = getInputs();
+      if (!validateInputs(inputs)) {
+        loanResultDiv.innerHTML = 'Please fill in all fields with valid numbers (S$ fields with digits and commas).';
+        loanResultDiv.classList.add('muted');
+        errorDiv.textContent = 'Please fill in ALL numeric fields with valid numbers (S$ fields with digits and commas).';
+        return;
+      }
+      errorDiv.textContent = '';
+
+      const valuation = getSelectedValuation();
+      const valuationType = getSelectedValuationType();
+      if (!valuation || !valuationType) return;
+
+      const ltvPercent = inputs.ltv;
+      const cpfUsage = inputs.cpfUsage;
+      const cpfMonthYear = inputs.cpfMonthYear;
+      const loanTenorYears = inputs.loanTenorYears;
+      const outstandingLoan = inputs.outstandingLoan;
+
+      if (loanTenorYears > 5) {
+        errorDiv.textContent = 'Loan Tenor (years) cannot exceed 5.';
+        loanResultDiv.classList.add('muted');
+        loanResultDiv.innerHTML = 'Please adjust Loan Tenor to 5 years or below.';
+        return;
+      }
+
+      // Derive CPF amount at end of loan tenor using 2.5% p.a. simple interest,
+      // including an extra 2-month buffer for disbursement timeframe.
+      const cpfRate = 0.025;
+      let monthsDiff = 0;
+      if (cpfMonthYear) {
+        const match = cpfMonthYear.match(/^(\d{1,2})\s*\/\s*(\d{4})$/);
+        if (match) {
+          const stmtMonth = parseInt(match[1], 10);
+          const stmtYear = parseInt(match[2], 10);
+          const now = new Date();
+          const curYear = now.getFullYear();
+          const curMonth = now.getMonth() + 1;
+          monthsDiff = (curYear - stmtYear) * 12 + (curMonth - stmtMonth);
+          if (monthsDiff < 0) monthsDiff = 0;
+        }
+      }
+      // Add 2 months buffer for disbursement timeframe
+      monthsDiff += 2;
+
+      const monthsAsYears = monthsDiff / 12;
+      const tenorYears = isNaN(loanTenorYears) ? 0 : loanTenorYears;
+      const totalYears = monthsAsYears + tenorYears;
+      const cpfFactor = 1 + cpfRate * totalYears;
+      const cpfAtEnd = cpfUsage * cpfFactor;
+
+      const maxLoanByLTV = valuation * (ltvPercent / 100);
+      const requestedLoan = maxLoanByLTV - cpfAtEnd;
+      const gearUp = requestedLoan - outstandingLoan;
+
+      let valuationCalcText = '';
+      if (valuationType === 'average') {
+        valuationCalcText = 'Average of 4 values (top 2 from Tier 1 valuers + top 2 from Tier 2 valuers).';
+      } else if (valuationType === 'secondLowest') {
+        valuationCalcText = '2nd lowest of the 4 values (top 2 from Tier 1 + top 2 from Tier 2).';
+      } else if (valuationType === 'lowest') {
+        valuationCalcText = 'Lowest of the 4 values (top 2 from Tier 1 + top 2 from Tier 2).';
+      }
+
+      loanResultDiv.classList.remove('muted');
+      loanResultDiv.innerHTML = `
+        <table>
+          <tr>
+            <th>Item</th>
+            <th>Amount</th>
+            <th>Calculation / Explanation</th>
+          </tr>
+          <tr>
+            <td>Valuation</td>
+            <td class="amount-cell">${formatMoney(valuation)}</td>
+            <td>${valuationCalcText}</td>
+          </tr>
+          <tr>
+            <td>LTV</td>
+            <td class="amount-cell">${ltvPercent.toFixed(2)}%</td>
+            <td>Loan-To-Value (LTV) percentage applied on the chosen valuation.</td>
+          </tr>
+          <tr>
+            <td>CPF Usage (current)</td>
+            <td class="amount-cell">${formatMoney(cpfUsage)}</td>
+            <td>CPF funds already utilised for this property as at the statement month/year.</td>
+          </tr>
+          <tr>
+            <td>CPF at end of loan tenor (used in calc)</td>
+            <td class="amount-cell">${formatMoney(cpfAtEnd)}</td>
+            <td>
+              Based on CPF as at ${cpfMonthYear || 'stated month/year'}, adding ${monthsDiff} month(s) of accrued interest at 2.5% p.a.
+              (including a 2‑month disbursement buffer) and a further ${tenorYears.toFixed(2)} year(s) of interest over the loan tenor (simple interest).
+            </td>
+          </tr>
+          <tr>
+            <td>Requested Loan Amount</td>
+            <td class="amount-cell">${formatMoney(requestedLoan)}</td>
+            <td>
+              (${formatMoney(valuation)} × ${ltvPercent.toFixed(2)}%) − CPF at end of tenor ${formatMoney(cpfAtEnd)}
+              <br>
+              = ${formatMoney(maxLoanByLTV)} − ${formatMoney(cpfAtEnd)}
+            </td>
+          </tr>
+          <tr>
+            <td>Outstanding Loan</td>
+            <td class="amount-cell">${formatMoney(outstandingLoan)}</td>
+            <td>Existing loan outstanding on the property prior to any gear-up.</td>
+          </tr>
+          <tr>
+            <td>Gear Up</td>
+            <td class="amount-cell">${formatMoney(gearUp)}</td>
+            <td>
+              ${formatMoney(requestedLoan)} − ${formatMoney(outstandingLoan)}
+              <br>
+              Indicates incremental financing on top of the existing loan.
+            </td>
+          </tr>
+        </table>
+      `;
+
+      const nowSave = new Date();
+      const record = {
+        date: nowSave.toLocaleString('en-SG', { hour12: false }),
+        borrowerName: inputs.borrowerName,
+        propertyAddress: inputs.propertyAddress,
+        referralSource: inputs.referralSource,
+        knightFrank: inputs.knightFrank,
+        colliers: inputs.colliers,
+        jll: inputs.jll,
+        cks: inputs.cks,
+        teho: inputs.teho,
+        edmundTie: inputs.edmundTie,
+        premas: inputs.premas,
+        valuationBasis:
+          valuationType === 'average'
+            ? 'Average'
+            : valuationType === 'secondLowest'
+            ? '2nd Lowest'
+            : 'Lowest',
+        valuation,
+        ltv: ltvPercent,
+        cpfUsage,
+        outstandingLoan,
+        requestedLoan,
+        gearUp
+      };
+
+      saveToHistory(record);
+
+// --- Shared history (Google Sheet) ---
+const sessionId = getOrCreateSessionId();
+const nowIso = new Date().toISOString();
+
+const inputsJson = {
+  borrower: {
+    user_name: inputs.userName || "",
+    deal_name: inputs.dealName || "",
+    borrower_name: inputs.borrowerName || "",
+    property_address: inputs.propertyAddress || "",
+    referral_source: inputs.referralSource || "",
+    industry: inputs.industry || "",
+    country: inputs.country || "",
+    currency: inputs.currency || "SGD"
+  },
+  valuers: {
+    knight_frank: inputs.knightFrank,
+    colliers: inputs.colliers,
+    jll: inputs.jll,
+    cks: inputs.cks,
+    teho: inputs.teho,
+    edmund_tie: inputs.edmundTie,
+    premas: inputs.premas
+  },
+  loan_params: {
+    ltv_pct: inputs.ltv,
+    cpf_usage_current: inputs.cpfUsage,
+    cpf_month_year: inputs.cpfMonthYear,
+    loan_tenor_years: inputs.loanTenorYears,
+    outstanding_loan: inputs.outstandingLoan
+  }
+};
+
+const outputsJson = {
+  valuation_options: valuationOptions,
+  valuation_basis: record.valuationBasis,
+  valuation_used: valuation,
+  cpf: {
+    cpf_rate_pa: 0.025,
+    cpf_months_diff_including_buffer: monthsDiff,
+    cpf_at_end_of_tenor: cpfAtEnd
+  },
+  results: {
+    max_loan_by_ltv: maxLoanByLTV,
+    requested_loan_amount: requestedLoan,
+    gear_up_amount: gearUp
+  }
+};
+
+logToSharedHistory({
+  apiKey: SHARED_HISTORY_API_KEY,
+
+  timestamp: nowIso,
+  tool: "abl-valuation",
+  user_name: inputs.userName || "",
+  team: TEAM_NAME,
+  session_id: sessionId,
+  calc_version: CALC_VERSION,
+  source: SOURCE_NAME,
+
+  deal_name: inputs.dealName || "",
+  borrower_name: inputs.borrowerName || "",
+  industry: inputs.industry || "",
+  country: inputs.country || "",
+  currency: (inputs.currency || "SGD"),
+
+  loan_amount: "",
+  interest_rate_pct: "",
+  tenor_years: inputs.loanTenorYears || "",
+  tenor_months: (inputs.loanTenorYears ? (inputs.loanTenorYears * 12) : ""),
+  repayment_type: "",
+  upfront_interest_months: "",
+  day_count: "365",
+  first_disbursement_date: "",
+  asset_type: "property",
+  valuation_amount: valuation,
+  valuer_type: "",
+  ltv_pct: inputs.ltv || "",
+  advance_rate_pct: "",
+  monthly_instalment: "",
+  first_month_interest: "",
+  total_interest_payable: "",
+  effective_rate_pct: "",
+  final_outstanding: "",
+  passes_credit_rules: "",
+
+  inputs_json: inputsJson,
+  outputs_json: outputsJson,
+  notes: "",
+  scenario_tag: "",
+  saved_from: "valuation"
+});
+    }
+
+
+    calculateBtn.addEventListener('click', () => {
+      const inputs = getInputs();
+
+      if (!validateInputs(inputs)) {
+        valuationChoicesDiv.innerHTML = 'Please fill in all numeric fields with valid numbers (S$ fields with digits and commas).';
+        valuationChoicesDiv.classList.add('muted');
+        loanResultDiv.classList.add('muted');
+        loanResultDiv.innerHTML = 'Please fill in all numeric fields with valid numbers (S$ fields with digits and commas).';
+        errorDiv.textContent = 'Please fill in ALL numeric fields with valid numbers (S$ fields with digits and commas).';
+        return;
+      }
+
+      errorDiv.textContent = '';
+
+      deriveValuationOptions(inputs);
+      renderValuationChoices();
+      calculateLoanAndRender();
+    });
+
+    function resetTool() {
+      const inputs = document.querySelectorAll('input');
+      inputs.forEach(input => {
+        if (input.type === 'radio') {
+          input.checked = false;
+        } else {
+          input.value = '';
+        }
+      });
+      errorDiv.textContent = '';
+      valuationChoicesDiv.classList.add('muted');
+      valuationChoicesDiv.innerHTML = 'Run the calculation to derive Average / 2nd Lowest / Lowest from the 4 selected valuations.';
+      loanResultDiv.classList.add('muted');
+      loanResultDiv.innerHTML = 'Enter valuer figures and click <strong>Run Calculation</strong> to view details here.';
+    }
+
+    resetBtn.addEventListener('click', resetTool);
+    exportBtn.addEventListener('click', () => window.print());
+    clearHistoryBtn.addEventListener('click', clearHistory);
+
+    // default currency
+    const curEl = document.getElementById('currency');
+    if (curEl && !curEl.value) curEl.value = 'SGD';
+
+    attachMoneyFormatters();
+    renderHistory();
+  </script>
+
+<div id="toast" class="toast"></div>
+</body>
+</html>
