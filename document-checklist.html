@@ -55,8 +55,8 @@
       box-shadow:var(--shadow);
       padding:16px;
     }
-    .card h2{ margin:0 0 10px 0; font-size:15px; letter-spacing:.2px; }
-    .sub{ color:var(--muted); font-size:12px; margin-top:-6px; margin-bottom:12px; line-height:1.4; }
+    .card h2{ margin:0 0 6px 0; font-size:15px; letter-spacing:.2px; }
+    .sub{ color:var(--muted); font-size:12px; margin-top:0; margin-bottom:6px; line-height:1.4; }
 
     .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; }
     label{ font-size:12px; color:var(--muted); display:block; margin-bottom:6px; }
@@ -172,9 +172,9 @@
       box-shadow:0 0 0 4px rgba(37,99,235,.12);
     }
 
-    .tools{ display:grid; gap:10px; }
+    .tools{ display:grid; gap:6px; }
     textarea#message{
-      width:100%; min-height:190px; resize:vertical;
+      width:100%; min-height:56px; resize:vertical;
       padding:12px; border:1px solid var(--line); border-radius:14px;
       outline:none; font-size:13px; line-height:1.4;
       font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background:#fff;
@@ -200,6 +200,23 @@
       letter-spacing:.4px; color:var(--muted);
       text-transform:uppercase;
     }
+  
+    .comment-toggle{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      font-size:12px;
+      color:var(--muted);
+      cursor:pointer;
+      user-select:none;
+      margin-top:6px;
+    }
+    .comment-toggle:hover{ color:var(--text); }
+    .comment-wrap{ margin-top:0; }
+    .comment.hidden{
+      display:none;
+    }
+
   </style>
 </head>
 <body>
@@ -239,7 +256,7 @@
           <div class="box"><p class="lbl">Missing</p><p class="num" id="kpiMissing">0</p></div>
         </div>
 
-        <div class="btnbar">
+        <div class="btnbar" style="margin-top:4px;">
           <button class="primary" id="btnSave">Save / Update record</button>
           <button id="btnMarkAll">Mark all received</button>
           <button id="btnClearChecks" class="ghost">Clear all</button>
@@ -253,7 +270,6 @@
 
       <aside class="card tools">
         <h2>Message</h2>
-        <div class="sub">Generate WhatsApp-friendly or Email-friendly message. Copy and paste into WhatsApp/email manually.</div>
 
         <div class="btnbar">
           <button id="btnGenFull">Generate full request</button>
@@ -261,7 +277,9 @@
           <button id="btnCopy">Copy message</button>
         </div>
 
-        <div class="row" style="margin-top:10px;">
+        <div class="sub">Generate WhatsApp-friendly or Email-friendly message. Copy and paste into WhatsApp/email manually.</div>
+
+        <div class="row" style="margin-top:6px;">
           <div style="flex:1; min-width:240px;">
             <label for="msgFormat">Message format</label>
             <select id="msgFormat">
@@ -273,9 +291,9 @@
 
         <textarea id="message" placeholder="Click Generate full request or Generate missing docs..."></textarea>
 
-        <hr style="border:none;border-top:1px solid var(--line);margin:8px 0;"/>
+        <hr style="border:none;border-top:1px solid var(--line);margin:4px 0;"/>
 
-        <h2>Retrieve existing record</h2>
+        <h2 style="margin-top:6px;">Retrieve existing record</h2>
         <div class="sub">Records are stored on this device (browser local storage).</div>
 
         <label for="recordSelect">Saved records (current application type)</label>
@@ -463,6 +481,12 @@
   const elBorrower = document.getElementById("borrowerName");
   const elAppType = document.getElementById("appType");
   const elMessage = document.getElementById("message");
+
+  function autoExpandMessage(){
+    elMessage.style.minHeight = elMessage.value ? "140px" : "56px";
+  }
+  elMessage.addEventListener("input", autoExpandMessage);
+
   const elToast = document.getElementById("toast");
   const elRecordStatus = document.getElementById("recordStatus");
   const elRecordSelect = document.getElementById("recordSelect");
@@ -481,6 +505,14 @@
     clearTimeout(toast._t);
     toast._t = setTimeout(()=> elToast.classList.remove("show"), 1800);
   }
+  function setCommentVisibility(textarea, show){
+    if(!textarea) return;
+    textarea.classList.toggle("hidden", !show);
+  }
+  function hasValue(textarea){
+    return !!(textarea && (textarea.value||"").trim());
+  }
+
   function normKey(s){
     return (s||"").trim().toLowerCase().replace(/\s+/g," ").replace(/[^\w\s&().-]/g,"");
   }
@@ -707,12 +739,33 @@
           cm.placeholder = (it.type === "comment")
             ? "Type here… (this will be included in the message)"
             : "Comment (optional)…";
-          meta.appendChild(cm);
+
+          // Collapse comment box by default for checkbox items (show when user clicks Add comment or when value exists)
+          const toggle = document.createElement("div");
+          toggle.className = "comment-toggle";
+          toggle.innerHTML = '<span>＋</span><span>Add comment</span>';
+
+          if(it.type === "comment"){
+            // comment-only fields always visible
+            meta.appendChild(cm);
+          } else {
+            setCommentVisibility(cm, false);
+            meta.appendChild(toggle);
+            meta.appendChild(cm);
+            toggle.addEventListener("click", ()=>{
+              const show = cm.classList.contains("hidden");
+              setCommentVisibility(cm, show);
+              if(show) cm.focus();
+            });
+          }
 
           cm.addEventListener("input", ()=>{
             if(it.type === "comment"){
               updateBadge(it.id, !!cm.value.trim());
               updateKPIs();
+            } else {
+              // auto-show if user pasted text; auto-hide if cleared
+              if(hasValue(cm)) setCommentVisibility(cm, true);
             }
           });
 
@@ -729,6 +782,11 @@
 
           // init badge
           updateBadge(it.id, isProvided(it));
+          // show comment box automatically if it has saved value
+          if(it.type !== "comment"){
+            const cmEl = document.getElementById("cm_" + it.id);
+            if(hasValue(cmEl)) setCommentVisibility(cmEl, true);
+          }
         });
       }
 
@@ -754,7 +812,24 @@
         cmGroup.className = "comment";
         cmGroup.id = "cm_" + sec.groupId;
         cmGroup.placeholder = "Comment for this section (optional)…";
+
+        const gtoggle = document.createElement("div");
+        gtoggle.className = "comment-toggle";
+        gtoggle.innerHTML = '<span>＋</span><span>Add comment</span>';
+
+        setCommentVisibility(cmGroup, false);
+        meta.appendChild(gtoggle);
         meta.appendChild(cmGroup);
+
+        gtoggle.addEventListener("click", ()=>{
+          const show = cmGroup.classList.contains("hidden");
+          setCommentVisibility(cmGroup, show);
+          if(show) cmGroup.focus();
+        });
+
+        cmGroup.addEventListener("input", ()=>{
+          if(hasValue(cmGroup)) setCommentVisibility(cmGroup, true);
+        });
 
         if(sec.groupDesc){
           const desc = document.createElement("p");
@@ -804,8 +879,25 @@
           cm.id = "cm_" + ch.id;
           cm.placeholder = "Comment (optional)…";
 
+          const toggle = document.createElement("div");
+          toggle.className = "comment-toggle";
+          toggle.innerHTML = '<span>＋</span><span>Add comment</span>';
+
+          setCommentVisibility(cm, false);
+
           submeta.appendChild(st);
+          submeta.appendChild(toggle);
           submeta.appendChild(cm);
+
+          toggle.addEventListener("click", ()=>{
+            const show = cm.classList.contains("hidden");
+            setCommentVisibility(cm, show);
+            if(show) cm.focus();
+          });
+
+          cm.addEventListener("input", ()=>{
+            if(hasValue(cm)) setCommentVisibility(cm, true);
+          });
 
           const subBadge = document.createElement("div");
           subBadge.className = "badge miss";
@@ -826,6 +918,8 @@
 
           // init
           updateBadge(ch.id, false);
+          const cmInit = document.getElementById("cm_" + ch.id);
+          if(hasValue(cmInit)) setCommentVisibility(cmInit, true);
         });
 
         meta.appendChild(nested);
@@ -848,6 +942,8 @@
 
         // init group badge after children exist
         refreshBadges();
+        const gcmInit = document.getElementById("cm_" + sec.groupId);
+        if(hasValue(gcmInit)) setCommentVisibility(gcmInit, true);
       }
     });
 
@@ -1142,10 +1238,12 @@
   // =========================
   document.getElementById("btnGenFull").addEventListener("click", ()=>{
     elMessage.value = buildMessage({mode:"full"});
+    autoExpandMessage();
     toast("Full request generated.");
   });
   document.getElementById("btnGenMissing").addEventListener("click", ()=>{
     elMessage.value = buildMessage({mode:"missing"});
+    autoExpandMessage();
     toast("Missing-docs message generated.");
   });
   document.getElementById("btnCopy").addEventListener("click", async ()=>{
