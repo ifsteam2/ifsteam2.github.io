@@ -928,8 +928,8 @@
           const groupSecLines = [];
           // Determine what's missing for this group
           const childStates = sec.children.map(ch => ({ ch, provided: idChecked(ch.id) }));
-          const groupComplete = groupComplete(sec);
-          const groupMissing = !groupComplete;
+          const complete = groupComplete(sec);
+          const groupMissing = !complete;
 
           if(mode === "missing" && !groupMissing){
             // nothing to add
@@ -1043,8 +1043,8 @@
       }
 
       if(sec.children && sec.groupId){
-        const groupComplete = groupComplete(sec);
-        const groupMissing = !groupComplete;
+        const complete = groupComplete(sec);
+        const groupMissing = !complete;
         const out = [];
 
         if(!(mode === "missing" && !groupMissing)){
