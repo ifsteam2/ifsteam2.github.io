@@ -19,84 +19,36 @@
       --radius: 16px;
     }
     *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      color:var(--text);
-      background:var(--bg);
-    }
-    header{
-      background:#fff;
-      border-bottom:1px solid var(--line);
-      position:sticky;
-      top:0;
-      z-index:50;
-    }
-    .topbar{
-      max-width:1100px;
-      margin:0 auto;
-      padding:14px 18px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-    }
+    body{ margin:0; font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:var(--text); background:var(--bg); }
+    header{ background:#fff; border-bottom:1px solid var(--line); position:sticky; top:0; z-index:50; }
+    .topbar{ max-width:1100px; margin:0 auto; padding:14px 18px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
     .topbar .left{ font-weight:700; font-size:16px; letter-spacing:.2px; }
     .topbar .right{ font-size:12px; color:var(--muted); text-align:right; line-height:1.2; white-space:nowrap; }
-
     main{ max-width:1100px; margin:18px auto 28px; padding:0 18px; }
-    .grid{ display:grid; grid-template-columns: 1.1fr .9fr; gap:14px; }
-    @media (max-width: 980px){ .grid{ grid-template-columns:1fr; } .topbar .right{ white-space:normal; } }
+    .grid{ display:grid; grid-template-columns:1.1fr .9fr; gap:14px; }
+    @media (max-width:980px){ .grid{ grid-template-columns:1fr; } .topbar .right{ white-space:normal; } }
 
-    .card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:16px;
-    }
+    .card{ background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px; }
     .card h2{ margin:0 0 6px 0; font-size:15px; letter-spacing:.2px; }
-    .sub{ color:var(--muted); font-size:12px; margin-top:0; margin-bottom:6px; line-height:1.4; }
+    .sub{ color:var(--muted); font-size:12px; margin:0 0 6px 0; line-height:1.4; }
 
     .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; }
     label{ font-size:12px; color:var(--muted); display:block; margin-bottom:6px; }
-
     input[type="text"], select{
-      width: 320px;
-      max-width:100%;
-      padding:10px 12px;
-      border:1px solid var(--line);
-      border-radius:12px;
-      outline:none;
-      font-size:14px;
-      background:#fff;
+      width:320px; max-width:100%; padding:10px 12px;
+      border:1px solid var(--line); border-radius:12px; outline:none;
+      font-size:14px; background:#fff;
     }
-    select{ width: 360px; font-size:13px; }
-    input[type="text"]:focus, select:focus{
-      border-color:rgba(37,99,235,.55);
-      box-shadow:0 0 0 4px rgba(37,99,235,.12);
-    }
+    select{ width:360px; font-size:13px; }
+    input[type="text"]:focus, select:focus{ border-color:rgba(37,99,235,.55); box-shadow:0 0 0 4px rgba(37,99,235,.12); }
 
-    .btnbar{ display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+    .btnbar{ display:flex; flex-wrap:wrap; gap:8px; margin-top:4px; }
     button{
-      border:1px solid var(--line);
-      background:#fff;
-      padding:10px 12px;
-      border-radius:12px;
-      cursor:pointer;
-      font-size:13px;
-      font-weight:600;
-      color:var(--text);
-      transition:.15s ease;
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
+      border:1px solid var(--line); background:#fff; padding:10px 12px;
+      border-radius:12px; cursor:pointer; font-size:13px; font-weight:600;
+      color:var(--text); transition:.15s ease; display:inline-flex; align-items:center; gap:8px;
     }
-    button:hover{
-      border-color:rgba(37,99,235,.4);
-      box-shadow:0 6px 16px rgba(0,0,0,.06);
-      transform:translateY(-1px);
-    }
+    button:hover{ border-color:rgba(37,99,235,.4); box-shadow:0 6px 16px rgba(0,0,0,.06); transform:translateY(-1px); }
     button.primary{ background:var(--accent); border-color:var(--accent); color:#fff; }
     button.primary:hover{ background:var(--accent-2); border-color:var(--accent-2); }
     button.danger{ background:#fff; border-color:rgba(220,38,38,.35); color:var(--danger); }
@@ -104,389 +56,258 @@
 
     .pill{
       display:inline-flex; align-items:center; gap:8px;
-      padding:8px 10px; border:1px solid var(--line);
-      border-radius:999px; background:#fff; font-size:12px; color:var(--muted);
-      margin-top:10px;
+      padding:8px 10px; border:1px solid var(--line); border-radius:999px;
+      background:#fff; font-size:12px; color:var(--muted); margin-top:10px;
     }
     .pill strong{ color:var(--text); font-weight:700; }
 
-    .kpi{ display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; margin-top:12px; }
+    .kpi{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:12px; }
     .kpi .box{ border:1px solid var(--line); border-radius:14px; padding:10px 12px; background:#fff; }
     .kpi .box .num{ font-size:18px; font-weight:800; margin:2px 0 0 0; }
     .kpi .box .lbl{ font-size:12px; color:var(--muted); margin:0; }
-    @media (max-width: 520px){ .kpi{ grid-template-columns:1fr; } }
+    @media (max-width:520px){ .kpi{ grid-template-columns:1fr; } }
 
     .list{ margin-top:10px; border-top:1px solid var(--line); padding-top:10px; }
-    .item{
-      display:flex; gap:10px; padding:10px 10px;
-      border:1px solid var(--line); border-radius:14px; margin-bottom:10px;
-      background:#fff;
+    .section-title{
+      margin:12px 0 8px; font-size:12px; font-weight:800; letter-spacing:.4px;
+      color:var(--muted); text-transform:uppercase;
     }
-    .item .meta{ flex:1; min-width:0; }
-    .item .title{ font-weight:700; font-size:13px; margin:0 0 4px 0; line-height:1.35; }
-    .item .desc{ margin:0; font-size:12px; color:var(--muted); line-height:1.4; }
+    .item{
+      display:flex; gap:10px; padding:10px 10px; border:1px solid var(--line);
+      border-radius:14px; margin-bottom:10px; background:#fff;
+    }
+    .meta{ flex:1; min-width:0; }
+    .title{ font-weight:700; font-size:13px; margin:0 0 4px 0; line-height:1.35; }
+    .desc{ margin:0; font-size:12px; color:var(--muted); line-height:1.4; }
+    input[type="checkbox"]{ width:18px; height:18px; margin-top:2px; cursor:pointer; accent-color:var(--accent); flex:0 0 auto; }
 
     .badge{
-      font-size:11px; padding:4px 8px; border-radius:999px;
-      border:1px solid var(--line); color:var(--muted); background:#fff;
-      white-space:nowrap; height:fit-content;
+      font-size:11px; padding:4px 8px; border-radius:999px; border:1px solid var(--line);
+      color:var(--muted); background:#fff; white-space:nowrap; height:fit-content;
     }
     .badge.ok{ border-color:rgba(22,163,74,.35); color:var(--ok); }
     .badge.miss{ border-color:rgba(220,38,38,.25); color:var(--danger); }
 
-    input[type="checkbox"]{
-      width:18px; height:18px; margin-top:2px; cursor:pointer;
-      accent-color: var(--accent); flex:0 0 auto;
-    }
-
-    .nested{
-      margin-top:10px; padding-top:10px;
-      border-top:1px dashed var(--line);
-      display:grid; gap:8px;
-    }
-    .subitem{
-      display:flex; gap:10px; align-items:flex-start;
-      padding:8px 10px; border:1px solid var(--line);
-      border-radius:12px; background:#fbfdff;
-    }
-    .stitle{ font-size:12px; font-weight:650; margin:0; line-height:1.35; }
-    .sdesc{ margin:2px 0 0 0; font-size:12px; color:var(--muted); line-height:1.35; }
-
-    .tag{
-      display:inline-block; font-size:10px; padding:2px 7px; border-radius:999px;
-      border:1px solid var(--line); color:var(--muted); background:#fff;
-      margin-left:8px; vertical-align:middle; white-space:nowrap;
-    }
-    .tag.mandatory{ border-color:rgba(220,38,38,.25); color:var(--danger); }
-    .tag.optional{ border-color:rgba(37,99,235,.25); color:var(--accent-2); }
-    .tag.info{ border-color:rgba(107,114,128,.25); color:var(--muted); }
-
     .comment{
-      width:100%; margin-top:8px; padding:10px 12px;
-      border:1px solid var(--line); border-radius:12px;
-      font-size:12px; line-height:1.35; outline:none;
+      width:100%; margin-top:8px; padding:10px 12px; border:1px solid var(--line);
+      border-radius:12px; font-size:12px; line-height:1.35; outline:none;
       resize:vertical; min-height:44px; background:#fff;
     }
-    .comment:focus{
-      border-color:rgba(37,99,235,.55);
-      box-shadow:0 0 0 4px rgba(37,99,235,.12);
+    .comment:focus{ border-color:rgba(37,99,235,.55); box-shadow:0 0 0 4px rgba(37,99,235,.12); }
+    .comment.hidden{ display:none; }
+
+    .comment-toggle{
+      display:inline-flex; align-items:center; gap:6px;
+      font-size:12px; color:var(--muted); cursor:pointer; user-select:none; margin-top:6px;
     }
+    .comment-toggle:hover{ color:var(--text); }
 
     .tools{ display:grid; gap:6px; }
     textarea#message{
-      width:100%; min-height:56px; resize:vertical;
-      padding:12px; border:1px solid var(--line); border-radius:14px;
-      outline:none; font-size:13px; line-height:1.4;
-      font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background:#fff;
+      width:100%; min-height:56px; resize:vertical; padding:12px;
+      border:1px solid var(--line); border-radius:14px; outline:none;
+      font-size:13px; line-height:1.4; font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif; background:#fff;
     }
-    textarea#message:focus{
-      border-color:rgba(37,99,235,.55);
-      box-shadow:0 0 0 4px rgba(37,99,235,.12);
-    }
+    textarea#message:focus{ border-color:rgba(37,99,235,.55); box-shadow:0 0 0 4px rgba(37,99,235,.12); }
 
     .toast{
-      position:fixed; bottom:16px; right:16px;
-      background:#111827; color:#fff; padding:10px 12px; border-radius:12px;
-      box-shadow:0 14px 40px rgba(0,0,0,.2); font-size:12px;
-      opacity:0; transform: translateY(10px);
-      transition:.2s ease; pointer-events:none; max-width:360px;
-      line-height:1.35; z-index:60;
+      position:fixed; bottom:16px; right:16px; background:#111827; color:#fff;
+      padding:10px 12px; border-radius:12px; box-shadow:0 14px 40px rgba(0,0,0,.2);
+      font-size:12px; opacity:0; transform:translateY(10px); transition:.2s ease;
+      pointer-events:none; max-width:360px; line-height:1.35; z-index:60;
     }
-    .toast.show{ opacity:1; transform: translateY(0); }
-
-    .section-title{
-      margin:14px 0 8px;
-      font-size:12px; font-weight:800;
-      letter-spacing:.4px; color:var(--muted);
-      text-transform:uppercase;
-    }
-  
-    .comment-toggle{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      font-size:12px;
-      color:var(--muted);
-      cursor:pointer;
-      user-select:none;
-      margin-top:6px;
-    }
-    .comment-toggle:hover{ color:var(--text); }
-    .comment-wrap{ margin-top:0; }
-    .comment.hidden{
-      display:none;
-    }
-
+    .toast.show{ opacity:1; transform:translateY(0); }
   </style>
 </head>
 <body>
-  <header>
-    <div class="topbar">
-      <div class="left">Application Documents • Checklist</div>
-      <div class="right">Internal working tool<br/>For discussion &amp; illustration only</div>
-    </div>
-  </header>
+<header>
+  <div class="topbar">
+    <div class="left">Application Documents • Checklist</div>
+    <div class="right">Internal working tool<br/>For discussion &amp; illustration only</div>
+  </div>
+</header>
 
-  <main>
-    <div class="grid">
-      <section class="card">
-        <h2>Application & Checklist</h2>
-        <div class="sub">Select application type. Tick documents as <strong>Received</strong>. Add comments per item where needed.</div>
+<main>
+  <div class="grid">
+    <section class="card">
+      <h2>Application & Checklist</h2>
+      <div class="sub">Select application type. Tick documents as <strong>Received</strong>. Add comments per item where needed.</div>
 
-        <div class="row">
-          <div style="flex:1; min-width:280px;">
-            <label for="appType">Application type *</label>
-            <select id="appType">
-              <option value="factoring_v1">Checklist 1 — Factoring application</option>
-              <option value="factoring_v3">Checklist 2 — Factoring (V3) application</option>
-              <option value="property_company">Checklist 3 — Property Loan (company) application</option>
-              <option value="property_individual">Checklist 4 — Property Loan (individual) application</option>
-            </select>
-          </div>
-
-          <div style="flex:1; min-width:280px;">
-            <label for="borrowerName">Company name / Borrower name (key for saving records) *</label>
-            <input id="borrowerName" type="text" placeholder="e.g., ABC Trading Pte Ltd" />
-          </div>
+      <div class="row">
+        <div style="flex:1; min-width:280px;">
+          <label for="appType">Application type *</label>
+          <select id="appType">
+            <option value="factoring_v1">Checklist 1 — Factoring application</option>
+            <option value="factoring_v3">Checklist 2 — Factoring (V3) Application</option>
+            <option value="property_company">Checklist 3 — Property loan (company) application</option>
+            <option value="property_individual">Checklist 4 — Property loan (individual) application</option>
+          </select>
         </div>
 
-        <div class="kpi" aria-label="Progress indicators">
-          <div class="box"><p class="lbl">Total items</p><p class="num" id="kpiTotal">0</p></div>
-          <div class="box"><p class="lbl">Received / Provided</p><p class="num" id="kpiDone">0</p></div>
-          <div class="box"><p class="lbl">Missing</p><p class="num" id="kpiMissing">0</p></div>
+        <div style="flex:1; min-width:280px;">
+          <label for="borrowerName">Company name / Borrower name (key for saving records) *</label>
+          <input id="borrowerName" type="text" placeholder="e.g., ABC Trading Pte Ltd" />
         </div>
+      </div>
 
-        <div class="btnbar" style="margin-top:4px;">
-          <button class="primary" id="btnSave">Save / Update record</button>
-          <button id="btnMarkAll">Mark all received</button>
-          <button id="btnClearChecks" class="ghost">Clear all</button>
-          <button id="btnReset" class="danger">Reset form</button>
+      <div class="kpi">
+        <div class="box"><p class="lbl">Total items</p><p class="num" id="kpiTotal">0</p></div>
+        <div class="box"><p class="lbl">Received / Provided</p><p class="num" id="kpiDone">0</p></div>
+        <div class="box"><p class="lbl">Missing</p><p class="num" id="kpiMissing">0</p></div>
+      </div>
+
+      <div class="btnbar">
+        <button class="primary" id="btnSave">Save / Update record</button>
+        <button id="btnMarkAll">Mark all received</button>
+        <button id="btnClear" class="ghost">Clear all</button>
+        <button id="btnReset" class="danger">Reset form</button>
+      </div>
+
+      <div class="pill" id="recordStatus"><span>Record:</span> <strong>Not saved</strong></div>
+
+      <div class="list" id="checklist"></div>
+    </section>
+
+    <aside class="card tools">
+      <h2>Message</h2>
+
+      <div class="btnbar">
+        <button id="btnGenFull">Generate full request</button>
+        <button id="btnGenMissing">Generate missing docs</button>
+        <button id="btnCopy">Copy message</button>
+      </div>
+
+      <div class="sub">Generate WhatsApp-friendly or Email-friendly message. Copy and paste into WhatsApp/email manually.</div>
+
+      <div class="row" style="margin-top:6px;">
+        <div style="flex:1; min-width:240px;">
+          <label for="msgFormat">Message format</label>
+          <select id="msgFormat">
+            <option value="whatsapp" selected>WhatsApp (recommended)</option>
+            <option value="email">Email</option>
+          </select>
         </div>
+      </div>
 
-        <div class="pill" id="recordStatus"><span>Record:</span> <strong>Not saved</strong></div>
+      <textarea id="message" placeholder="Click Generate full request or Generate missing docs..."></textarea>
 
-        <div class="list" id="checklist"></div>
-      </section>
+      <hr style="border:none;border-top:1px solid var(--line);margin:4px 0;"/>
 
-      <aside class="card tools">
-        <h2>Message</h2>
+      <h2 style="margin-top:6px;">Retrieve existing record</h2>
+      <div class="sub">Records are stored on this device (browser local storage).</div>
 
-        <div class="btnbar">
-          <button id="btnGenFull">Generate full request</button>
-          <button id="btnGenMissing">Generate missing docs</button>
-          <button id="btnCopy">Copy message</button>
-        </div>
+      <label for="recordSelect">Saved records (current application type)</label>
+      <select id="recordSelect"><option value="">— No record selected —</option></select>
 
-        <div class="sub">Generate WhatsApp-friendly or Email-friendly message. Copy and paste into WhatsApp/email manually.</div>
+      <div class="btnbar">
+        <button id="btnLoad">Load record</button>
+        <button id="btnDelete" class="danger">Delete record</button>
+        <button id="btnExport">Export selected (JSON)</button>
+      </div>
+    </aside>
+  </div>
+</main>
 
-        <div class="row" style="margin-top:6px;">
-          <div style="flex:1; min-width:240px;">
-            <label for="msgFormat">Message format</label>
-            <select id="msgFormat">
-              <option value="whatsapp" selected>WhatsApp (recommended)</option>
-              <option value="email">Email</option>
-            </select>
-          </div>
-        </div>
-
-        <textarea id="message" placeholder="Click Generate full request or Generate missing docs..."></textarea>
-
-        <hr style="border:none;border-top:1px solid var(--line);margin:4px 0;"/>
-
-        <h2 style="margin-top:6px;">Retrieve existing record</h2>
-        <div class="sub">Records are stored on this device (browser local storage).</div>
-
-        <label for="recordSelect">Saved records (current application type)</label>
-        <select id="recordSelect"><option value="">— No record selected —</option></select>
-
-        <div class="btnbar">
-          <button id="btnLoad">Load record</button>
-          <button id="btnDelete" class="danger">Delete record</button>
-          <button id="btnExport">Export selected (JSON)</button>
-        </div>
-      </aside>
-    </div>
-  </main>
-
-  <div class="toast" id="toast"></div>
+<div class="toast" id="toast"></div>
 
 <script>
-(function(){
-  const STORAGE_KEY = "application_doc_records_v1";
+(() => {
+  const STORAGE_KEY = "application_doc_records_v2";
 
-  // =========================
-  // Checklist templates
-  // =========================
-  // Item types:
-  // - checkbox: received if checked
-  // - comment: provided if comment non-empty (no checkbox)
-  //
-  // Group logic can be provided via groupCompleteFn(groupState) returning boolean.
   const CHECKLISTS = {
     factoring_v1: {
       label: "Factoring application",
       intro_full: "For the Factoring facility application, please share the following documents:",
       intro_missing: "Just following up on the Factoring facility application.",
       sections: [
-        {
-          title: "Company Documents",
-          emoji: "📄",
-          items: [
-            { id:"d1", type:"checkbox", text:"Last 3 years company financials" },
-            { id:"d2", type:"checkbox", text:"Last 6 months company’s operating bank statement" },
-            { id:"d3", type:"checkbox", text:"Latest AR and AP aging reports" },
-            { id:"d4", type:"checkbox", text:"Latest CBS Statement of Directors/Shareholders" },
-            { id:"d5", type:"checkbox", text:"Latest 2 years of NOA of Directors/Shareholders" },
-            { id:"d11", type:"checkbox", text:"Last 6 months CPF Payment Records (if CPF payments are not sighted in Bank Statements)" },
-            { id:"d12", type:"checkbox", text:"Last 6 months FWL Payment Records (if FWL payments are not sighted in Bank Statements)" }
-          ]
-        },
-        {
-          title: "Directors & Shareholders",
-          emoji: "🪪",
-          items: [
-            { id:"d6", type:"checkbox", text:"NRIC (front and back) of all shareholders and directors / Passports for foreign shareholders and directors" }
-          ]
-        },
-        {
-          title: "For Each Customer to Be Factored",
-          emoji: "📦",
-          groupId: "d7",
-          groupDesc: "",
-          groupCompleteFn: (st) => {
-            // Complete if (a OR b) AND c AND d are checked
-            const a = !!st["d7a"], b = !!st["d7b"], c = !!st["d7c"], d = !!st["d7d"];
-            return ((a || b) && c && d);
-          },
-          children: [
-            { id:"d7a", type:"checkbox", required:"optional", text:"(If available) Letter of award / contract" },
-            { id:"d7b", type:"checkbox", required:"optional", text:"(If available) Purchase order from customer" },
-            { id:"d7c", type:"checkbox", required:"mandatory", text:"(Mandatory) Invoice for same PO/contract" },
-            { id:"d7d", type:"checkbox", required:"mandatory", text:"(Mandatory) Delivery order or proof of completion of work" }
-          ]
-        },
-        {
-          title: "Additional Information",
-          emoji: "📊",
-          items: [
-            { id:"d8", type:"checkbox", text:"Last 6 months listing of invoices opened to proposed customers" },
-            { id:"d9", type:"checkbox", text:"Last 6 months listing of credit notes opened to proposed customers (if available)" },
-            { id:"d10", type:"checkbox", text:"List of all loans taken by company (Bank/FI, Facility Type, Currency, Facility Limit, Outstanding Amount, Security Type)" }
-          ]
-        }
+        { title: "Company Documents", emoji: "📄", items: [
+          { id:"f1_c1", text:"Last 3 years company financials" },
+          { id:"f1_c2", text:"Last 6 months company’s operating bank statement" },
+          { id:"f1_c3", text:"Latest AR and AP aging reports" },
+          { id:"f1_c4", text:"Last 6 months CPF Payment Records (if CPF payments are not sighted in Bank Statements)" },
+          { id:"f1_c5", text:"Last 6 months FWL Payment Records (if FWL payments are not sighted in Bank Statements)" },
+        ]},
+        { title: "Directors & Shareholders", emoji: "🪪", items: [
+          { id:"f1_d1", text:"NRIC (front and back) of all shareholders and directors / Passports for foreign shareholders and directors" },
+          { id:"f1_d2", text:"Latest CBS Statement of Directors/Shareholders" },
+          { id:"f1_d3", text:"Latest 2 years of NOA of Directors/Shareholders" },
+        ]},
+        { title: "Additional Information", emoji: "📊", items: [
+          { id:"f1_a1", text:"Last 6 months listing of invoices opened to proposed customers" },
+          { id:"f1_a2", text:"Last 6 months listing of credit notes opened to proposed customers (if available)" },
+          { id:"f1_a3", text:"List of all loans taken by company (Bank/FI, Facility Type, Currency, Facility Limit, Outstanding Amount, Security Type)" },
+        ]},
       ]
     },
 
     factoring_v3: {
-      label: "Factoring (V3) application",
+      label: "Factoring (V3) Application",
       intro_full: "For the Factoring (V3) facility application, please share the following documents:",
       intro_missing: "Just following up on the Factoring (V3) facility application.",
       sections: [
-        {
-          title: "Documents",
-          emoji: "📄",
-          items: [
-            { id:"v3_1", type:"checkbox", text:"Declaration Form" },
-            { id:"v3_2", type:"checkbox", text:"AR Aging List" },
-            { id:"v3_3", type:"checkbox", text:"Last 6 months company operating bank statements" }
-          ]
-        }
+        { title: "Factoring (V3) Application", emoji: "📄", items: [
+          { id:"v3_1", text:"Declaration Form (please see attached)" },
+          { id:"v3_2", text:"AR Aging List" },
+          { id:"v3_3", text:"Last 6 months company operating bank statements" },
+        ]},
       ]
     },
 
     property_company: {
-      label: "Property Loan (company) application",
-      intro_full: "For the Property Loan (Company) application, please share the following information/documents:",
-      intro_missing: "Just following up on the Property Loan (Company) application.",
+      label: "Property loan (company) application",
+      intro_full: "For the Property loan (company) application, please share the following documents:",
+      intro_missing: "Just following up on the Property loan (company) application.",
       sections: [
-        {
-          title: "Borrower / Mortgagor Information",
-          emoji: "🪪",
-          items: [
-            { id:"pc_1", type:"checkbox", text:"NRIC / Passports of all Mortgagors" },
-            { id:"pc_2", type:"checkbox", text:"Mortgagors mobile number and/or email address" },
-            { id:"pc_3", type:"checkbox", text:"Promoters occupation (please indicate company name)" }
-          ]
-        },
-        {
-          title: "Loan & Property",
-          emoji: "🏠",
-          items: [
-            { id:"pc_4", type:"checkbox", text:"Latest Property Loan Statement" },
-            { id:"pc_5", type:"checkbox", text:"CPF Statement of Withdrawal for All Mortgagors (if CPF is used)" },
-            { id:"pc_6", type:"checkbox", text:"Mortgagor’s NOA (Latest 2 years)" },
-            { id:"pc_7", type:"checkbox", text:"Tenancy agreement, if any" },
-            { id:"pc_8", type:"checkbox", text:"Property photos (Exterior & Interior)" }
-          ]
-        },
-        {
-          title: "Credit & Legal",
-          emoji: "📌",
-          items: [
-            { id:"pc_9", type:"checkbox", text:"Mortgagor’s Credit Bureau Report (within 1 month)" },
-            { id:"pc_10", type:"checkbox", text:"Signed Consent Form" }
-          ]
-        },
-        {
-          title: "Additional information",
-          emoji: "📝",
-          items: [
-            { id:"pc_11", type:"comment", text:"Source of repayment" },
-            { id:"pc_12", type:"comment", text:"Intention to sell the property" }
-          ]
-        }
+        { title: "Company/Borrower information", emoji: "🏢", items: [
+          { id:"pc_c1", text:"Last 2 years Financial Statements of Company" },
+          { id:"pc_c2", text:"Latest 6 month Bank Statements of Company" },
+          { id:"pc_c3", text:"List of all loans taken by company (Bank/FI, Facility Type, Currency, Facility Limit, Outstanding Amount, Security Type)" },
+        ]},
+        { title: "Directors/Shareholders information", emoji: "🪪", items: [
+          { id:"pc_d1", text:"NRIC (front and back) of all shareholders and directors / Passports for foreign shareholders and directors" },
+          { id:"pc_d2", text:"Latest CBS Statement of Directors/Shareholders" },
+          { id:"pc_d3", text:"Latest 2 years of NOA of Directors/Shareholders" },
+        ]},
+        { title: "Property information", emoji: "🏠", items: [
+          { id:"pc_p1", text:"Latest Property Loan Statement" },
+          { id:"pc_p2", text:"CPF Statement of Withdrawal for All Borrower / Mortgagor (if CPF is used)" },
+          { id:"pc_p3", text:"Tenancy agreement, if any" },
+          { id:"pc_p4", text:"Property photos (Exterior & Interior)" },
+        ]},
       ]
     },
 
     property_individual: {
-      label: "Property Loan (individual) application",
-      intro_full: "For the Property Loan (Individual) application, please share the following documents:",
-      intro_missing: "Just following up on the Property Loan (Individual) application.",
+      label: "Property loan (individual) application",
+      intro_full: "For the Property loan (individual) application, please share the following documents:",
+      intro_missing: "Just following up on the Property loan (individual) application.",
       sections: [
-        {
-          title: "Company / Shareholder Information",
-          emoji: "🏢",
-          items: [
-            { id:"pi_1", type:"checkbox", text:"NRIC of Singapore shareholders and directors / Passport of foreign shareholders and directors" },
-            { id:"pi_2", type:"checkbox", text:"Latest 2 years NOA of Singapore shareholders and directors" },
-            { id:"pi_3", type:"checkbox", text:"Last 2 years Financial Statements of Company" },
-            { id:"pi_4", type:"checkbox", text:"Latest 6 months Bank Statements of Company" },
-            { id:"pi_9", type:"checkbox", text:"Latest CBS Statement of Directors/Shareholders" }
-          ]
-        },
-        {
-          title: "Property & Loan",
-          emoji: "🏠",
-          items: [
-            { id:"pi_5", type:"checkbox", text:"CPF Statement of Withdrawal for All Mortgagors (if CPF is used)" },
-            { id:"pi_6", type:"checkbox", text:"Existing loan statements or SOA" },
-            { id:"pi_7", type:"checkbox", text:"Tenancy agreement (if the property is rented out)" }
-          ]
-        },
-        {
-          title: "Declarations",
-          emoji: "📄",
-          items: [
-            { id:"pi_8", type:"checkbox", text:"List of all loans taken by company (Bank/FI, Facility Type, Currency, Facility Limit, Outstanding Amount, Security Type)" }
-          ]
-        }
+        { title: "Borrower / Mortgagors Information", emoji: "🪪", items: [
+          { id:"pi_b1", text:"NRIC (front and back) of all mortgagors / Passports for foreigner mortgagors" },
+          { id:"pi_b2", text:"Latest CBS Statement of mortgagors" },
+          { id:"pi_b3", text:"Latest 2 years of NOA of mortgagors" },
+          { id:"pi_b4", text:"Mortgagors mobile number and/or email address" },
+          { id:"pi_b5", text:"Mortgagors occupation (please indicate company name)" },
+        ]},
+        { title: "Property information", emoji: "🏠", items: [
+          { id:"pi_p1", text:"Latest Property Loan Statement" },
+          { id:"pi_p2", text:"CPF Statement of Withdrawal for All Mortgagors (if CPF is used applicable)" },
+          { id:"pi_p3", text:"Tenancy agreement, if any" },
+          { id:"pi_p4", text:"Property photos (Exterior & Interior)" },
+        ]},
+        { title: "Additional information", emoji: "📌", items: [
+          { id:"pi_a1", text:"Consent Form (please see attached)" },
+        ]},
       ]
     }
   };
+;
 
-  // =========================
-  // DOM refs
-  // =========================
+  // DOM
   const elChecklist = document.getElementById("checklist");
   const elBorrower = document.getElementById("borrowerName");
   const elAppType = document.getElementById("appType");
   const elMessage = document.getElementById("message");
-
-  function autoExpandMessage(){
-    elMessage.style.minHeight = elMessage.value ? "140px" : "56px";
-  }
-  elMessage.addEventListener("input", autoExpandMessage);
-
   const elToast = document.getElementById("toast");
   const elRecordStatus = document.getElementById("recordStatus");
   const elRecordSelect = document.getElementById("recordSelect");
@@ -496,25 +317,27 @@
   const elKpiDone = document.getElementById("kpiDone");
   const elKpiMissing = document.getElementById("kpiMissing");
 
-  // =========================
-  // Helpers
-  // =========================
   function toast(msg){
     elToast.textContent = msg;
     elToast.classList.add("show");
     clearTimeout(toast._t);
-    toast._t = setTimeout(()=> elToast.classList.remove("show"), 1800);
+    toast._t = setTimeout(() => elToast.classList.remove("show"), 1800);
   }
+  function autoExpandMessage(){
+    elMessage.style.minHeight = elMessage.value ? "140px" : "56px";
+  }
+  elMessage.addEventListener("input", autoExpandMessage);
+
   function setCommentVisibility(textarea, show){
     if(!textarea) return;
     textarea.classList.toggle("hidden", !show);
   }
   function hasValue(textarea){
-    return !!(textarea && (textarea.value||"").trim());
+    return !!(textarea && (textarea.value || "").trim());
   }
 
   function normKey(s){
-    return (s||"").trim().toLowerCase().replace(/\s+/g," ").replace(/[^\w\s&().-]/g,"");
+    return (s || "").trim().toLowerCase().replace(/\s+/g, " ").replace(/[^\w\s&().-]/g, "");
   }
   function nowISO(){ return new Date().toISOString(); }
 
@@ -526,37 +349,18 @@
 
   function currentTemplate(){ return CHECKLISTS[elAppType.value]; }
 
-  function flattenTemplate(tpl){
-    // returns array of {id, type, text, parentGroupId?}
+  function flatItems(tpl){
     const out = [];
-    tpl.sections.forEach(sec=>{
-      if(sec.items){
-        sec.items.forEach(it => out.push({ ...it, sectionTitle: sec.title }));
-      }
-      if(sec.children){
-        out.push({ id: sec.groupId, type:"group", text: sec.title, sectionTitle: sec.title });
-        sec.children.forEach(ch => out.push({ ...ch, parentGroupId: sec.groupId, sectionTitle: sec.title }));
-      }
+    tpl.sections.forEach(sec => {
+      (sec.items || []).forEach(it => out.push({ ...it, sectionTitle: sec.title }));
     });
-    // Only count leaf items (checkbox/comment) for KPIs
     return out;
   }
 
   function idChecked(id){ return !!document.getElementById("cb_" + id)?.checked; }
   function idComment(id){ return (document.getElementById("cm_" + id)?.value || "").trim(); }
-  function isProvided(item){
-    if(item.type === "checkbox") return idChecked(item.id);
-    if(item.type === "comment") return !!idComment(item.id);
-    return false;
-  }
 
-  // For factoring_v1 item 7: group completion function.
-  function groupComplete(sec){
-    if(!sec.groupCompleteFn) return null;
-    const st = {};
-    (sec.children || []).forEach(ch => { st[ch.id] = idChecked(ch.id); });
-    return !!sec.groupCompleteFn(st);
-  }
+  function isProvided(id){ return idChecked(id); } // only checkbox items in this spec
 
   function updateBadge(id, provided){
     const b = document.getElementById("badge_" + id);
@@ -564,409 +368,154 @@
     b.classList.toggle("ok", provided);
     b.classList.toggle("miss", !provided);
     b.textContent = provided ? "Received" : "Missing";
-    // For comment-only items, show "Provided"
-    if(document.getElementById("cm_" + id) && !document.getElementById("cb_" + id)){
-      b.textContent = provided ? "Provided" : "Missing";
-    }
   }
 
   function updateKPIs(){
     const tpl = currentTemplate();
-    const flat = flattenTemplate(tpl);
-
-    const leaf = flat.filter(x => x.type === "checkbox" || x.type === "comment");
-    const total = leaf.length;
-
+    const items = flatItems(tpl);
+    const total = items.length;
     let done = 0;
-    leaf.forEach(it => { if(isProvided(it)) done++; });
-
+    items.forEach(it => { if(isProvided(it.id)) done++; });
     elKpiTotal.textContent = total;
     elKpiDone.textContent = done;
-    elKpiMissing.textContent = (total - done);
+    elKpiMissing.textContent = total - done;
   }
 
-  function getState(){
-    const tpl = currentTemplate();
-    const flat = flattenTemplate(tpl);
-
-    const checklist = {};
-    const comments = {};
-    flat.forEach(it=>{
-      if(it.type === "checkbox"){
-        checklist[it.id] = idChecked(it.id);
-      } else if(it.type === "comment"){
-        comments[it.id] = idComment(it.id);
-      } else if(it.type === "group"){
-        // store group checkbox for convenience
-        checklist[it.id] = idChecked(it.id);
-      }
-    });
-
-    // Also store comments for groupId if exists
-    tpl.sections.forEach(sec=>{
-      if(sec.groupId){
-        comments[sec.groupId] = idComment(sec.groupId);
-      }
-    });
-
-    return { checklist, comments };
-  }
-
-  function applyState(payload){
-    const tpl = currentTemplate();
-    const flat = flattenTemplate(tpl);
-
-    const checklist = payload?.checklist || {};
-    const comments = payload?.comments || {};
-
-    // Apply checkboxes first
-    flat.forEach(it=>{
-      if(it.type === "checkbox" || it.type === "group"){
-        const el = document.getElementById("cb_" + it.id);
-        if(el) el.checked = !!checklist[it.id];
-      }
-      const cm = document.getElementById("cm_" + it.id);
-      if(cm) cm.value = comments[it.id] || "";
-    });
-
-    // Apply group comments
-    tpl.sections.forEach(sec=>{
-      if(sec.groupId){
-        const cm = document.getElementById("cm_" + sec.groupId);
-        if(cm) cm.value = comments[sec.groupId] || "";
-      }
-    });
-
-    // Refresh badges
-    refreshBadges();
-    updateKPIs();
-  }
-
-  function refreshBadges(){
-    const tpl = currentTemplate();
-    const flat = flattenTemplate(tpl);
-
-    // leaf badges
-    flat.forEach(it=>{
-      if(it.type === "checkbox" || it.type === "comment"){
-        updateBadge(it.id, isProvided(it));
-      }
-    });
-
-    // group badges
-    tpl.sections.forEach(sec=>{
-      if(sec.children && sec.groupId){
-        const complete = groupComplete(sec);
-        if(complete !== null){
-          // set group checkbox as complete
-          const gcb = document.getElementById("cb_" + sec.groupId);
-          if(gcb){
-            gcb.indeterminate = false;
-            gcb.checked = complete;
-          }
-          updateBadge(sec.groupId, complete);
-        } else {
-          // default group = all children checked
-          const all = sec.children.every(ch => idChecked(ch.id));
-          const any = sec.children.some(ch => idChecked(ch.id));
-          const gcb = document.getElementById("cb_" + sec.groupId);
-          if(gcb){
-            gcb.indeterminate = !all && any;
-            gcb.checked = all;
-          }
-          updateBadge(sec.groupId, all);
-        }
-      }
-    });
+  function refreshRecordStatus(text, ok=false){
+    elRecordStatus.innerHTML = `<span>Record:</span> <strong>${text}</strong>`;
+    elRecordStatus.style.borderColor = ok ? "rgba(22,163,74,.35)" : "var(--line)";
+    elRecordStatus.style.color = ok ? "var(--ok)" : "var(--muted)";
+    elRecordStatus.querySelector("strong").style.color = ok ? "var(--ok)" : "var(--text)";
   }
 
   function render(){
     const tpl = currentTemplate();
     elChecklist.innerHTML = "";
 
-    tpl.sections.forEach((sec, secIdx)=>{
+    tpl.sections.forEach((sec) => {
       const secTitle = document.createElement("div");
       secTitle.className = "section-title";
       secTitle.textContent = (sec.emoji ? (sec.emoji + " ") : "") + sec.title;
       elChecklist.appendChild(secTitle);
 
-      // Normal items
-      if(sec.items){
-        sec.items.forEach((it, idx)=>{
-          const wrap = document.createElement("div");
-          wrap.className = "item";
-          wrap.dataset.id = it.id;
-
-          let leftEl = document.createElement("div");
-          leftEl.style.width = "18px"; // align with checkbox width
-          leftEl.style.marginTop = "2px";
-
-          if(it.type === "checkbox"){
-            const cb = document.createElement("input");
-            cb.type = "checkbox";
-            cb.id = "cb_" + it.id;
-            leftEl = cb;
-
-            cb.addEventListener("change", ()=>{
-              updateBadge(it.id, cb.checked);
-              updateKPIs();
-            });
-          }
-
-          const meta = document.createElement("div");
-          meta.className = "meta";
-
-          const title = document.createElement("p");
-          title.className = "title";
-
-          // numbering within section for readability
-          const number = (sec.items ? sec.items.indexOf(it) + 1 : idx + 1);
-          title.textContent = `${number}. ${it.text}`;
-
-          // comment-only tag
-          if(it.type === "comment"){
-            const tag = document.createElement("span");
-            tag.className = "tag info";
-            tag.textContent = "Comment only";
-            title.appendChild(tag);
-          }
-
-          meta.appendChild(title);
-
-          const cm = document.createElement("textarea");
-          cm.className = "comment";
-          cm.id = "cm_" + it.id;
-          cm.placeholder = (it.type === "comment")
-            ? "Type here… (this will be included in the message)"
-            : "Comment (optional)…";
-
-          // Collapse comment box by default for checkbox items (show when user clicks Add comment or when value exists)
-          const toggle = document.createElement("div");
-          toggle.className = "comment-toggle";
-          toggle.innerHTML = '<span>＋</span><span>Add comment</span>';
-
-          if(it.type === "comment"){
-            // comment-only fields always visible
-            meta.appendChild(cm);
-          } else {
-            setCommentVisibility(cm, false);
-            meta.appendChild(toggle);
-            meta.appendChild(cm);
-            toggle.addEventListener("click", ()=>{
-              const show = cm.classList.contains("hidden");
-              setCommentVisibility(cm, show);
-              if(show) cm.focus();
-            });
-          }
-
-          cm.addEventListener("input", ()=>{
-            if(it.type === "comment"){
-              updateBadge(it.id, !!cm.value.trim());
-              updateKPIs();
-            } else {
-              // auto-show if user pasted text; auto-hide if cleared
-              if(hasValue(cm)) setCommentVisibility(cm, true);
-            }
-          });
-
-          const badge = document.createElement("div");
-          badge.className = "badge miss";
-          badge.id = "badge_" + it.id;
-          badge.textContent = (it.type === "comment") ? "Missing" : "Missing";
-
-          wrap.appendChild(leftEl);
-          wrap.appendChild(meta);
-          wrap.appendChild(badge);
-
-          elChecklist.appendChild(wrap);
-
-          // init badge
-          updateBadge(it.id, isProvided(it));
-          // show comment box automatically if it has saved value
-          if(it.type !== "comment"){
-            const cmEl = document.getElementById("cm_" + it.id);
-            if(hasValue(cmEl)) setCommentVisibility(cmEl, true);
-          }
-        });
-      }
-
-      // Group (children)
-      if(sec.children && sec.groupId){
+      sec.items.forEach((it, idx) => {
         const wrap = document.createElement("div");
         wrap.className = "item";
-        wrap.dataset.id = sec.groupId;
+        wrap.dataset.id = it.id;
 
         const cb = document.createElement("input");
         cb.type = "checkbox";
-        cb.id = "cb_" + sec.groupId;
+        cb.id = "cb_" + it.id;
 
         const meta = document.createElement("div");
         meta.className = "meta";
 
         const title = document.createElement("p");
         title.className = "title";
-        title.textContent = sec.title;
+        title.textContent = `${idx + 1}. ${it.text}`;
         meta.appendChild(title);
 
-        const cmGroup = document.createElement("textarea");
-        cmGroup.className = "comment";
-        cmGroup.id = "cm_" + sec.groupId;
-        cmGroup.placeholder = "Comment for this section (optional)…";
+        // collapsible comment (optional)
+        const toggle = document.createElement("div");
+        toggle.className = "comment-toggle";
+        toggle.innerHTML = "<span>＋</span><span>Add comment</span>";
 
-        const gtoggle = document.createElement("div");
-        gtoggle.className = "comment-toggle";
-        gtoggle.innerHTML = '<span>＋</span><span>Add comment</span>';
+        const cm = document.createElement("textarea");
+        cm.className = "comment hidden";
+        cm.id = "cm_" + it.id;
+        cm.placeholder = "Comment (optional)…";
+        meta.appendChild(toggle);
+        meta.appendChild(cm);
 
-        setCommentVisibility(cmGroup, false);
-        meta.appendChild(gtoggle);
-        meta.appendChild(cmGroup);
-
-        gtoggle.addEventListener("click", ()=>{
-          const show = cmGroup.classList.contains("hidden");
-          setCommentVisibility(cmGroup, show);
-          if(show) cmGroup.focus();
+        toggle.addEventListener("click", () => {
+          const show = cm.classList.contains("hidden");
+          setCommentVisibility(cm, show);
+          if(show) cm.focus();
         });
 
-        cmGroup.addEventListener("input", ()=>{
-          if(hasValue(cmGroup)) setCommentVisibility(cmGroup, true);
+        cm.addEventListener("input", () => {
+          if(hasValue(cm)) setCommentVisibility(cm, true);
         });
-
-        if(sec.groupDesc){
-          const desc = document.createElement("p");
-          desc.className = "desc";
-          desc.textContent = sec.groupDesc;
-          meta.appendChild(desc);
-        }
 
         const badge = document.createElement("div");
         badge.className = "badge miss";
-        badge.id = "badge_" + sec.groupId;
+        badge.id = "badge_" + it.id;
         badge.textContent = "Missing";
 
         wrap.appendChild(cb);
         wrap.appendChild(meta);
         wrap.appendChild(badge);
-
-        // Nested children list
-        const nested = document.createElement("div");
-        nested.className = "nested";
-
-        sec.children.forEach((ch)=>{
-          const sub = document.createElement("div");
-          sub.className = "subitem";
-          sub.dataset.id = ch.id;
-
-          const subcb = document.createElement("input");
-          subcb.type = "checkbox";
-          subcb.id = "cb_" + ch.id;
-
-          const submeta = document.createElement("div");
-          submeta.className = "meta";
-
-          const st = document.createElement("p");
-          st.className = "stitle";
-          st.textContent = ch.text;
-
-          if(ch.required){
-            const tag = document.createElement("span");
-            tag.className = "tag " + (ch.required === "mandatory" ? "mandatory" : "optional");
-            tag.textContent = (ch.required === "mandatory") ? "Mandatory" : "If available";
-            st.appendChild(tag);
-          }
-
-          const cm = document.createElement("textarea");
-          cm.className = "comment";
-          cm.id = "cm_" + ch.id;
-          cm.placeholder = "Comment (optional)…";
-
-          const toggle = document.createElement("div");
-          toggle.className = "comment-toggle";
-          toggle.innerHTML = '<span>＋</span><span>Add comment</span>';
-
-          setCommentVisibility(cm, false);
-
-          submeta.appendChild(st);
-          submeta.appendChild(toggle);
-          submeta.appendChild(cm);
-
-          toggle.addEventListener("click", ()=>{
-            const show = cm.classList.contains("hidden");
-            setCommentVisibility(cm, show);
-            if(show) cm.focus();
-          });
-
-          cm.addEventListener("input", ()=>{
-            if(hasValue(cm)) setCommentVisibility(cm, true);
-          });
-
-          const subBadge = document.createElement("div");
-          subBadge.className = "badge miss";
-          subBadge.id = "badge_" + ch.id;
-          subBadge.textContent = "Missing";
-
-          sub.appendChild(subcb);
-          sub.appendChild(submeta);
-          sub.appendChild(subBadge);
-
-          subcb.addEventListener("change", ()=>{
-            updateBadge(ch.id, subcb.checked);
-            refreshBadges();
-            updateKPIs();
-          });
-
-          nested.appendChild(sub);
-
-          // init
-          updateBadge(ch.id, false);
-          const cmInit = document.getElementById("cm_" + ch.id);
-          if(hasValue(cmInit)) setCommentVisibility(cmInit, true);
-        });
-
-        meta.appendChild(nested);
-
-        cb.addEventListener("change", ()=>{
-          const checked = cb.checked;
-          cb.indeterminate = false;
-          sec.children.forEach(ch=>{
-            const ccb = document.getElementById("cb_" + ch.id);
-            if(ccb){
-              ccb.checked = checked;
-              updateBadge(ch.id, checked);
-            }
-          });
-          refreshBadges();
-          updateKPIs();
-        });
-
         elChecklist.appendChild(wrap);
 
-        // init group badge after children exist
-        refreshBadges();
-        const gcmInit = document.getElementById("cm_" + sec.groupId);
-        if(hasValue(gcmInit)) setCommentVisibility(gcmInit, true);
-      }
+        cb.addEventListener("change", () => {
+          updateBadge(it.id, cb.checked);
+          updateKPIs();
+        });
+      });
+    });
+
+    // init status from current DOM (and auto-expand comments if saved)
+    const items = flatItems(tpl);
+    items.forEach(it => {
+      updateBadge(it.id, idChecked(it.id));
+      const cm = document.getElementById("cm_" + it.id);
+      if(hasValue(cm)) setCommentVisibility(cm, true);
     });
 
     updateKPIs();
   }
 
-  // =========================
-  // Messaging
-  // =========================
   function buildMessage({mode}){
     const tpl = currentTemplate();
-    const format = elMsgFormat.value || "whatsapp";
+    const fmt = elMsgFormat.value || "whatsapp";
     const borrower = (elBorrower.value || "").trim();
     const greet = borrower ? `Hi ${borrower},` : "Hi,";
 
-    const includeComment = (itemIsMissing, id) => {
-      // Requirement: missing-docs generator includes comments ONLY for missing items
-      if(mode === "missing") return itemIsMissing;
-      return true;
+    const lines = [];
+    const includeComment = (missing) => (mode === "missing") ? missing : true;
+
+    const addSectionWhatsApp = (sec) => {
+      const header = `${sec.emoji ? (sec.emoji + " ") : ""}*${sec.title}*`.trim();
+      const secLines = [];
+      sec.items.forEach(it => {
+        const provided = idChecked(it.id);
+        const missing = !provided;
+        if(mode === "missing" && !missing) return;
+
+        secLines.push(`• ${it.text}`);
+        const cmt = idComment(it.id);
+        if(cmt && includeComment(missing)) secLines.push(`   _Comment: ${cmt}_`);
+      });
+      if(secLines.length){
+        lines.push(header);
+        lines.push(...secLines);
+        lines.push("");
+      }
     };
 
-    const lines = [];
-    if(format === "whatsapp"){
+    const addSectionEmail = (sec) => {
+      const secLines = [];
+      sec.items.forEach(it => {
+        const provided = idChecked(it.id);
+        const missing = !provided;
+        if(mode === "missing" && !missing) return;
+
+        secLines.push(`- ${it.text}`);
+        const cmt = idComment(it.id);
+        if(cmt && includeComment(missing)) secLines.push(`  Comment: ${cmt}`);
+      });
+      if(secLines.length){
+        lines.push(sec.title + ":");
+        lines.push(...secLines);
+        lines.push("");
+      }
+    };
+
+    // compute any missing
+    const items = flatItems(tpl);
+    const anyMissing = items.some(it => !idChecked(it.id));
+
+    if(fmt === "whatsapp"){
       lines.push(greet);
       lines.push("");
 
@@ -974,9 +523,8 @@
         lines.push(tpl.intro_missing);
         lines.push("");
 
-        const anyMissing = computeMissing().missingCount > 0;
         if(!anyMissing){
-          lines.push("✅ *All required documents are marked as received/provided.*");
+          lines.push("✅ *All required documents are marked as received.*");
           lines.push("");
           lines.push("Thank you 🙏");
           return lines.join("\n");
@@ -989,120 +537,22 @@
         lines.push("");
       }
 
-      tpl.sections.forEach(sec=>{
-        // Section header
-        const secLines = [];
-        const header = `${sec.emoji ? (sec.emoji + " ") : ""}*${sec.title}*`.trim();
-
-        // Items
-        if(sec.items){
-          sec.items.forEach(it=>{
-            const provided = isProvided(it);
-            const missing = !provided;
-            if(mode === "missing" && !missing) return;
-
-            if(secLines.length === 0) secLines.push(header);
-            if(it.type === "comment"){
-              // comment-only as a prompt + response if any
-              secLines.push(`• ${it.text}:`);
-              const cmt = idComment(it.id);
-              if(cmt){
-                secLines.push(`   ${cmt}`);
-              }
-            } else {
-              secLines.push(`• ${it.text}`);
-              const cmt = idComment(it.id);
-              if(cmt && includeComment(missing, it.id)){
-                secLines.push(`   _Comment: ${cmt}_`);
-              }
-            }
-          });
-        }
-
-        // Group children (e.g., item 7)
-        if(sec.children && sec.groupId){
-          const groupSecLines = [];
-          // Determine what's missing for this group
-          const childStates = sec.children.map(ch => ({ ch, provided: idChecked(ch.id) }));
-          const complete = groupComplete(sec);
-          const groupMissing = !complete;
-
-          if(mode === "missing" && !groupMissing){
-            // nothing to add
-          } else {
-            groupSecLines.push(header);
-            sec.children.forEach(ch=>{
-              const provided = idChecked(ch.id);
-              const missing = !provided;
-
-              // In missing mode, only list missing requirements:
-              // - Mandatory (always if missing)
-              // - Optional only if BOTH optional are missing AND group is incomplete (so we ask for at least one)
-              if(mode === "missing"){
-                if(ch.required === "mandatory" && missing){
-                  groupSecLines.push(`• ${ch.text}`);
-                  const cmt = idComment(ch.id);
-                  if(cmt && includeComment(true, ch.id)) groupSecLines.push(`   _Comment: ${cmt}_`);
-                }
-              } else {
-                groupSecLines.push(`• ${ch.text}`);
-                const cmt = idComment(ch.id);
-                if(cmt) groupSecLines.push(`   _Comment: ${cmt}_`);
-              }
-            });
-
-            if(mode === "missing"){
-              // If optional pair both missing and group incomplete, ask for at least one
-              const optA = idChecked(sec.children[0].id);
-              const optB = idChecked(sec.children[1].id);
-              const needOptional = !(optA || optB) && groupMissing;
-              if(needOptional){
-                // Show both optional lines
-                const a = sec.children[0], b = sec.children[1];
-                groupSecLines.push(`• ${a.text}`);
-                const cA = idComment(a.id);
-                if(cA && includeComment(true, a.id)) groupSecLines.push(`   _Comment: ${cA}_`);
-                groupSecLines.push(`• ${b.text}`);
-                const cB = idComment(b.id);
-                if(cB && includeComment(true, b.id)) groupSecLines.push(`   _Comment: ${cB}_`);
-              }
-              // Group-level comment only if group missing
-              const gcm = idComment(sec.groupId);
-              if(gcm){
-                groupSecLines.push(`   _Comment: ${gcm}_`);
-              }
-            } else {
-              const gcm = idComment(sec.groupId);
-              if(gcm) groupSecLines.push(`   _Comment: ${gcm}_`);
-            }
-          }
-
-          if(groupSecLines.length > 1){
-            if(secLines.length) secLines.push(""); // spacing
-            secLines.push(...groupSecLines);
-          }
-        }
-
-        if(secLines.length){
-          lines.push(...secLines);
-          lines.push("");
-        }
-      });
+      tpl.sections.forEach(addSectionWhatsApp);
 
       lines.push("Thank you 🙏");
       return lines.join("\n").trim();
     }
 
-    // Email format
+    // Email
     lines.push(greet);
     lines.push("");
+
     if(mode === "missing"){
       lines.push(tpl.intro_missing);
       lines.push("");
 
-      const anyMissing = computeMissing().missingCount > 0;
       if(!anyMissing){
-        lines.push("All required documents are marked as received/provided. Thank you.");
+        lines.push("All required documents are marked as received. Thank you.");
         return lines.join("\n");
       }
       lines.push("Documents outstanding as of now:");
@@ -1112,98 +562,12 @@
       lines.push("");
     }
 
-    tpl.sections.forEach(sec=>{
-      const secLines = [];
-      const header = sec.title + ":";
-
-      if(sec.items){
-        const itemsOut = [];
-        sec.items.forEach(it=>{
-          const provided = isProvided(it);
-          const missing = !provided;
-          if(mode === "missing" && !missing) return;
-
-          if(it.type === "comment"){
-            itemsOut.push(`- ${it.text}: ${idComment(it.id) || ""}`.trim());
-          } else {
-            itemsOut.push(`- ${it.text}`);
-            const cmt = idComment(it.id);
-            if(cmt && includeComment(missing, it.id)) itemsOut.push(`  Comment: ${cmt}`);
-          }
-        });
-        if(itemsOut.length){
-          secLines.push(header);
-          secLines.push(...itemsOut);
-          secLines.push("");
-        }
-      }
-
-      if(sec.children && sec.groupId){
-        const complete = groupComplete(sec);
-        const groupMissing = !complete;
-        const out = [];
-
-        if(!(mode === "missing" && !groupMissing)){
-          out.push(header);
-          // mandatory missing
-          if(mode === "missing"){
-            sec.children.forEach(ch=>{
-              if(ch.required === "mandatory" && !idChecked(ch.id)){
-                out.push(`- ${ch.text}`);
-                const cmt = idComment(ch.id);
-                if(cmt) out.push(`  Comment: ${cmt}`);
-              }
-            });
-            // optional if neither provided
-            const optA = idChecked(sec.children[0].id);
-            const optB = idChecked(sec.children[1].id);
-            if(!(optA || optB) && groupMissing){
-              const a = sec.children[0], b = sec.children[1];
-              out.push(`- ${a.text}`);
-              const cA = idComment(a.id);
-              if(cA) out.push(`  Comment: ${cA}`);
-              out.push(`- ${b.text}`);
-              const cB = idComment(b.id);
-              if(cB) out.push(`  Comment: ${cB}`);
-            }
-            const gcm = idComment(sec.groupId);
-            if(gcm) out.push(`  Comment: ${gcm}`);
-          } else {
-            sec.children.forEach(ch=>{
-              out.push(`- ${ch.text}`);
-              const cmt = idComment(ch.id);
-              if(cmt) out.push(`  Comment: ${cmt}`);
-            });
-            const gcm = idComment(sec.groupId);
-            if(gcm) out.push(`  Comment: ${gcm}`);
-          }
-          out.push("");
-        }
-
-        if(out.length) secLines.push(...out);
-      }
-
-      if(secLines.length) lines.push(...secLines);
-    });
+    tpl.sections.forEach(addSectionEmail);
 
     lines.push("Thank you.");
     return lines.join("\n").trim();
   }
 
-  function computeMissing(){
-    const tpl = currentTemplate();
-    const flat = flattenTemplate(tpl).filter(x => x.type === "checkbox" || x.type === "comment");
-
-    let missingCount = 0;
-    flat.forEach(it => { if(!isProvided(it)) missingCount++; });
-
-    // adjust for group completion: children are already counted as leaf items
-    return { missingCount };
-  }
-
-  // =========================
-  // Record select
-  // =========================
   function recordKey(appType, borrowerName){
     return normKey(appType + "||" + borrowerName);
   }
@@ -1211,12 +575,11 @@
   function populateRecordSelect(){
     const records = getRecords();
     const appType = elAppType.value;
-    const keys = Object.keys(records)
-      .filter(k => records[k]?.appType === appType)
+    const keys = Object.keys(records).filter(k => records[k]?.appType === appType)
       .sort((a,b)=> (records[a].borrowerName || "").localeCompare(records[b].borrowerName || ""));
 
-    elRecordSelect.innerHTML = `<option value="">— No record selected —</option>`;
-    keys.forEach(k=>{
+    elRecordSelect.innerHTML = '<option value="">— No record selected —</option>';
+    keys.forEach(k => {
       const r = records[k];
       const opt = document.createElement("option");
       opt.value = k;
@@ -1226,100 +589,87 @@
     });
   }
 
-  function refreshRecordStatus(text, ok=false){
-    elRecordStatus.innerHTML = `<span>Record:</span> <strong>${text}</strong>`;
-    elRecordStatus.style.borderColor = ok ? "rgba(22,163,74,.35)" : "var(--line)";
-    elRecordStatus.style.color = ok ? "var(--ok)" : "var(--muted)";
-    elRecordStatus.querySelector("strong").style.color = ok ? "var(--ok)" : "var(--text)";
+  function getState(){
+    const tpl = currentTemplate();
+    const items = flatItems(tpl);
+    const checklist = {};
+    const comments = {};
+    items.forEach(it => {
+      checklist[it.id] = idChecked(it.id);
+      comments[it.id] = idComment(it.id);
+    });
+    return { checklist, comments };
   }
 
-  // =========================
+  function applyState(payload){
+    const tpl = currentTemplate();
+    const items = flatItems(tpl);
+    const checklist = payload?.checklist || {};
+    const comments = payload?.comments || {};
+    items.forEach(it => {
+      const cb = document.getElementById("cb_" + it.id);
+      if(cb) cb.checked = !!checklist[it.id];
+      const cm = document.getElementById("cm_" + it.id);
+      if(cm) cm.value = comments[it.id] || "";
+      if(hasValue(cm)) setCommentVisibility(cm, true);
+      updateBadge(it.id, cb?.checked);
+    });
+    updateKPIs();
+  }
+
   // Buttons
-  // =========================
-  document.getElementById("btnGenFull").addEventListener("click", ()=>{
+  document.getElementById("btnGenFull").addEventListener("click", () => {
     elMessage.value = buildMessage({mode:"full"});
     autoExpandMessage();
     toast("Full request generated.");
   });
-  document.getElementById("btnGenMissing").addEventListener("click", ()=>{
+  document.getElementById("btnGenMissing").addEventListener("click", () => {
     elMessage.value = buildMessage({mode:"missing"});
     autoExpandMessage();
     toast("Missing-docs message generated.");
   });
-  document.getElementById("btnCopy").addEventListener("click", async ()=>{
+  document.getElementById("btnCopy").addEventListener("click", async () => {
     const txt = elMessage.value.trim();
     if(!txt){ toast("Nothing to copy yet."); return; }
     try{ await navigator.clipboard.writeText(txt); toast("Copied to clipboard."); }
     catch(e){ elMessage.select(); document.execCommand("copy"); toast("Copied (fallback)."); }
   });
 
-  document.getElementById("btnMarkAll").addEventListener("click", ()=>{
+  document.getElementById("btnMarkAll").addEventListener("click", () => {
     const tpl = currentTemplate();
-    // mark checkbox items and group children as checked
-    tpl.sections.forEach(sec=>{
-      if(sec.items){
-        sec.items.forEach(it=>{
-          if(it.type === "checkbox"){
-            const cb = document.getElementById("cb_" + it.id);
-            if(cb) cb.checked = true;
-          }
-        });
-      }
-      if(sec.children){
-        sec.children.forEach(ch=>{
-          const cb = document.getElementById("cb_" + ch.id);
-          if(cb) cb.checked = true;
-        });
-        const gcb = document.getElementById("cb_" + sec.groupId);
-        if(gcb){ gcb.checked = true; gcb.indeterminate = false; }
-      }
+    flatItems(tpl).forEach(it => {
+      const cb = document.getElementById("cb_" + it.id);
+      if(cb) cb.checked = true;
+      updateBadge(it.id, true);
     });
-    refreshBadges();
     updateKPIs();
     toast("All marked as received.");
   });
 
-  document.getElementById("btnClearChecks").addEventListener("click", ()=>{
+  document.getElementById("btnClear").addEventListener("click", () => {
     const tpl = currentTemplate();
-    tpl.sections.forEach(sec=>{
-      if(sec.items){
-        sec.items.forEach(it=>{
-          if(it.type === "checkbox"){
-            const cb = document.getElementById("cb_" + it.id);
-            if(cb) cb.checked = false;
-          }
-          const cm = document.getElementById("cm_" + it.id);
-          if(cm) cm.value = "";
-        });
-      }
-      if(sec.children){
-        sec.children.forEach(ch=>{
-          const cb = document.getElementById("cb_" + ch.id);
-          if(cb) cb.checked = false;
-          const cm = document.getElementById("cm_" + ch.id);
-          if(cm) cm.value = "";
-        });
-        const gcb = document.getElementById("cb_" + sec.groupId);
-        if(gcb){ gcb.checked = false; gcb.indeterminate = false; }
-        const gcm = document.getElementById("cm_" + sec.groupId);
-        if(gcm) gcm.value = "";
-      }
+    flatItems(tpl).forEach(it => {
+      const cb = document.getElementById("cb_" + it.id);
+      if(cb) cb.checked = false;
+      const cm = document.getElementById("cm_" + it.id);
+      if(cm){ cm.value = ""; setCommentVisibility(cm, false); }
+      updateBadge(it.id, false);
     });
-    refreshBadges();
     updateKPIs();
     toast("Cleared.");
   });
 
-  document.getElementById("btnReset").addEventListener("click", ()=>{
+  document.getElementById("btnReset").addEventListener("click", () => {
     elBorrower.value = "";
     elMessage.value = "";
-    document.getElementById("btnClearChecks").click();
+    autoExpandMessage();
+    document.getElementById("btnClear").click();
     elRecordSelect.value = "";
     refreshRecordStatus("Not saved", false);
     toast("Form reset.");
   });
 
-  document.getElementById("btnSave").addEventListener("click", ()=>{
+  document.getElementById("btnSave").addEventListener("click", () => {
     const borrower = (elBorrower.value || "").trim();
     if(!borrower){
       toast("Company/Borrower name is required to save a record.");
@@ -1327,16 +677,14 @@
       return;
     }
     const appType = elAppType.value;
-    const { checklist, comments } = getState();
+    const state = getState();
     const records = getRecords();
     const key = recordKey(appType, borrower);
-
     records[key] = {
       appType,
       appLabel: CHECKLISTS[appType].label,
       borrowerName: borrower,
-      checklist,
-      comments,
+      ...state,
       updatedAt: nowISO()
     };
     setRecords(records);
@@ -1346,27 +694,25 @@
     toast("Record saved.");
   });
 
-  document.getElementById("btnLoad").addEventListener("click", ()=>{
+  document.getElementById("btnLoad").addEventListener("click", () => {
     const key = elRecordSelect.value;
     if(!key){ toast("Select a record first."); return; }
     const records = getRecords();
     const r = records[key];
     if(!r){ toast("Record not found."); populateRecordSelect(); return; }
-
     elBorrower.value = r.borrowerName || "";
     applyState(r);
     refreshRecordStatus(`Loaded (${r.borrowerName || "record"})`, true);
     toast("Record loaded.");
   });
 
-  document.getElementById("btnDelete").addEventListener("click", ()=>{
+  document.getElementById("btnDelete").addEventListener("click", () => {
     const key = elRecordSelect.value;
     if(!key){ toast("Select a record first."); return; }
     const records = getRecords();
     const r = records[key];
     if(!r){ toast("Record not found."); populateRecordSelect(); return; }
-    const ok = confirm(`Delete record for "${r.borrowerName || key}"? This cannot be undone.`);
-    if(!ok) return;
+    if(!confirm(`Delete record for "${r.borrowerName || key}"? This cannot be undone.`)) return;
     delete records[key];
     setRecords(records);
     populateRecordSelect();
@@ -1375,18 +721,17 @@
     toast("Record deleted.");
   });
 
-  document.getElementById("btnExport").addEventListener("click", ()=>{
+  document.getElementById("btnExport").addEventListener("click", () => {
     const key = elRecordSelect.value;
     if(!key){ toast("Select a record first."); return; }
     const records = getRecords();
     const r = records[key];
     if(!r){ toast("Record not found."); return; }
-
     const json = JSON.stringify(r, null, 2);
     const blob = new Blob([json], {type:"application/json"});
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    const safeName = (r.borrowerName || "record").replace(/[^\w\s.-]/g,"").trim().replace(/\s+/g,"_");
+    const safeName = (r.borrowerName || "record").replace(/[^\w\s.-]/g, "").trim().replace(/\s+/g, "_");
     a.href = url;
     a.download = `Doc_Record_${r.appType}_${safeName}.json`;
     document.body.appendChild(a);
@@ -1396,20 +741,20 @@
     toast("Exported JSON.");
   });
 
-  // Change of app type -> rerender and reload record list
-  elAppType.addEventListener("change", ()=>{
-    // Clear message + checklist state (but keep borrower name)
+  elAppType.addEventListener("change", () => {
+    document.getElementById("btnClear").click();
     elMessage.value = "";
+    autoExpandMessage();
     render();
     populateRecordSelect();
     refreshRecordStatus("Not saved", false);
     toast("Checklist loaded.");
   });
 
-  // Initial
+  // init
   render();
   populateRecordSelect();
-
+  autoExpandMessage();
 })();
 </script>
 </body>
